@@ -1,3 +1,6 @@
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
+
 class DataListMeta {
   late int total;
   late int pageSize;
@@ -9,8 +12,10 @@ class DataListMeta {
 
   DataListMeta.fromJson(Map<String, dynamic> json) {
     total = json.containsKey("total") ? json["total"] : 0;
-    pageSize = json.containsKey("pageSize") ? json["pageSize"] : 0;
-    page = json.containsKey("page") ? json["page"] : 1;
-    totalPages = json.containsKey("totalPages") ? json["totalPages"] : 1;
+    RequestPayload requestPayload =
+        StateHelper.eamState.classesState.requestPayload;
+    page = requestPayload.page;
+    pageSize = requestPayload.limit;
+    totalPages = (total * 1.0 / pageSize).ceil();
   }
 }

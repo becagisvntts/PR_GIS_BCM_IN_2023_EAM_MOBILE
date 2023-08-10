@@ -13,11 +13,14 @@ ClassesState classesReducer(ClassesState prevState, action) {
           activeClass: action.activeClass,
           loadingClassDetail: true,
           requestPayload: RequestPayload());
-    case FetchClassDetailSuccessAction:
+    case FetchClassAttributesSuccessAction:
       return prevState.copyWith(
-          classAttributes: action.attributes,
-          classCards: action.cards,
-          loadingClassDetail: false);
+          classAttributes: action.list, loadingClassDetail: false);
+    case FetchClassCardsSuccessAction:
+      return prevState.copyWith(classCards: action.list);
+
+    case UpdateRequestPayloadAction:
+      return prevState.copyWith(requestPayload: action.requestPayload);
     default:
       return prevState;
   }

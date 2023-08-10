@@ -1,49 +1,53 @@
-class ClassAttribute {
-  late String id;
-  late String type;
-  late String name;
-  late String description;
-  late bool showInGrid;
-  late bool unique;
-  late bool active;
-  late int index;
-  late String? defaultValue;
-  late String group;
-  late String groupDescription;
+import 'package:flutter/material.dart';
 
-  ClassAttribute.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey("_id")) {
-      id = json["_id"];
+abstract class ClassAttribute {
+  String attrId = "_id";
+  String type = "text";
+  String name = "attribute";
+  String description = "description";
+  dynamic value;
+  dynamic valueCode;
+  dynamic valueDescription;
+
+  ClassAttribute() {
+    initProperties();
+  }
+
+  void initProperties();
+
+  String getValueAsString() {
+    return value != null ? "$value" : "";
+  }
+
+  Widget getValueAsWidget() {
+    return Text(getValueAsString());
+  }
+
+  void syncAttributeConfig(Map<String, dynamic> attributeConfig) {
+    attrId = attributeConfig["_id"];
+    name = attributeConfig["name"];
+    description = attributeConfig["description"];
+  }
+
+  void syncDataFromCard(Map<String, dynamic> card) {
+    if (card.containsKey(name)) {
+      value = card[name];
     }
-    if (json.containsKey("type")) {
-      type = json["type"];
-    }
-    if (json.containsKey("name")) {
-      name = json["name"];
-    }
-    if (json.containsKey("description")) {
-      description = json["description"];
-    }
-    if (json.containsKey("showInGrid")) {
-      showInGrid = json["showInGrid"];
-    }
-    if (json.containsKey("unique")) {
-      unique = json["unique"];
-    }
-    if (json.containsKey("active")) {
-      active = json["active"];
-    }
-    if (json.containsKey("index")) {
-      index = json["index"];
-    }
-    if (json.containsKey("defaultValue")) {
-      defaultValue = json["defaultValue"];
-    }
-    if (json.containsKey("group")) {
-      group = json["group"];
-    }
-    if (json.containsKey("groupDescription")) {
-      groupDescription = json["groupDescription"];
+  }
+
+  ClassAttribute copyWith(Map<String, dynamic> attributeConfig);
+  ClassAttribute copyConfigToInstance(
+      ClassAttribute clone, Map<String, dynamic> attributeConfig) {
+    {
+      clone
+        ..attrId =
+            attributeConfig.containsKey("_id") ? attributeConfig["_id"] : attrId
+        ..name =
+            attributeConfig.containsKey("name") ? attributeConfig["name"] : name
+        ..description = attributeConfig.containsKey("description")
+            ? attributeConfig["description"]
+            : description;
+      return clone;
     }
   }
 }

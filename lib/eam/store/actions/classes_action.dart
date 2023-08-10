@@ -1,4 +1,5 @@
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.dart';
 
 class FetchClassesAction {}
 
@@ -12,19 +13,19 @@ class UpdateActiveClass {
   UpdateActiveClass({required this.activeClass});
 }
 
-class FetchClassDetailSuccessAction {
-  DataList attributes;
-  DataList cards;
-  FetchClassDetailSuccessAction(
-      {required this.attributes, required this.cards});
-}
-
 class FetchClassAttributesSuccessAction {
   DataList list;
   FetchClassAttributesSuccessAction({required this.list});
 }
 
+class FetchClassCardsAction {}
+
 class FetchClassCardsSuccessAction {
   DataList list;
   FetchClassCardsSuccessAction({required this.list});
+}
+
+class UpdateRequestPayloadAction {
+  RequestPayload requestPayload;
+  UpdateRequestPayloadAction({required this.requestPayload});
 }

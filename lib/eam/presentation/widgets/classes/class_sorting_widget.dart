@@ -6,7 +6,8 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_config
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
 class ClassSortingWidget extends StatefulWidget {
-  const ClassSortingWidget({super.key});
+  final Function onSort;
+  const ClassSortingWidget({super.key, required this.onSort});
 
   @override
   State<StatefulWidget> createState() => ClassSortingWidgetState();
@@ -19,6 +20,11 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
     "DESC": "Giảm dần"
   };
 
+  late String propertySelected =
+      StateHelper.eamState.classesState.requestPayload.propertySorting;
+  late String directionSelected =
+      StateHelper.eamState.classesState.requestPayload.directionSorting;
+
   @override
   void initState() {
     super.initState();
@@ -26,21 +32,21 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
   }
 
   void getSortingAttributes() {
-    // DataListMeta meta = StateHelper.eamState.classesState.classCards.meta;
-    //
-    // if(meta.sort == null) {
-    //
-    // }
     DataList classAttributes =
         StateHelper.eamState.classesState.classAttributes;
     for (int i = 0; i < classAttributes.data.length; i++) {
       Map<String, dynamic> attribute = classAttributes.data[i];
-      if (attribute[ClassesConfig.attributeShowInGridByKey]) {
+      if (attribute[ClassesConfig.attributeShowInGridByKey] &&
+          attribute[ClassesConfig.attributeSortingEnableByKey]) {
         sortingAttributes.add(DropdownMenuItem(
             value: attribute[ClassesConfig.attributeNameByKey],
             child: Text(attribute[ClassesConfig.attributeTitleByKey])));
       }
     }
+  }
+
+  void sortCards(String propertySorting, String directionSorting) {
+    widget.onSort(propertySorting, directionSorting);
   }
 
   @override
@@ -51,8 +57,11 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
             Expanded(
                 child: FormBuilderDropdown(
                     decoration: FormInputDecoration(),
+                    initialValue: propertySelected,
                     items: sortingAttributes,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      propertySelected = value;
+                    },
                     dropdownColor: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     menuMaxHeight: 300,
@@ -61,6 +70,7 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
             Expanded(
                 child: FormBuilderDropdown(
                     decoration: FormInputDecoration(),
+                    initialValue: directionSelected,
                     items: const [
                       DropdownMenuItem(
                         value: "ASC",
@@ -71,7 +81,10 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
                         child: Text("Giảm dần"),
                       )
                     ],
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      directionSelected = value!;
+                      sortCards(propertySelected, directionSelected);
+                    },
                     dropdownColor: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     menuMaxHeight: 300,

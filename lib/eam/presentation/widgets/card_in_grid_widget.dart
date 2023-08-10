@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
 class CardInGridWidget extends StatefulWidget {
   final Map<String, dynamic> cardData;
-  const CardInGridWidget({super.key, required this.cardData});
+  final int index;
+  const CardInGridWidget(
+      {super.key, required this.cardData, required this.index});
 
   @override
   State<StatefulWidget> createState() => CardInGridWidgetState();
@@ -22,18 +26,18 @@ class CardInGridWidgetState extends State<CardInGridWidget> {
   final Map<String, dynamic> activeClass =
       StateHelper.eamState.classesState.activeClass;
 
-  Widget getAttributeText(Map<String, dynamic> attribute) {
-    String attributeName = attribute[ClassesConfig.attributeNameByKey];
-    dynamic attributeValue = "";
-    if (widget.cardData.containsKey(attributeName)) {
-      attributeValue = widget.cardData[attributeName] ?? "";
-    }
+  Widget getAttributeText(Map<String, dynamic> attributeConfig) {
+    ClassAttribute attribute =
+        AttributeService.getCopyClassAttributeByAttributeConfig(
+            attributeConfig);
+    attribute.syncDataFromCard(widget.cardData);
+
     return Text.rich(TextSpan(//apply style to all
         children: [
       TextSpan(
-          text: "${attribute[ClassesConfig.attributeTitleByKey]}: ",
+          text: "${attribute.description}: ",
           style: const TextStyle(color: Colors.black54)),
-      TextSpan(text: "$attributeValue")
+      TextSpan(text: attribute.getValueAsString())
     ]));
   }
 
@@ -53,22 +57,32 @@ class CardInGridWidgetState extends State<CardInGridWidget> {
                       [ClassesConfig.attributeShowInGridByKey])
                     getAttributeText(classAttributes.data[i]),
                 PaddingWrapper(
-                    child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        onTap: () => setState(() {
-                              isShowFull = !isShowFull;
-                            }),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: ThemeConfig.appColorLighting),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 0),
-                            child: Icon(
-                                isShowFull
-                                    ? Icons.keyboard_arrow_up_rounded
-                                    : Icons.keyboard_arrow_down_rounded,
-                                color: ThemeConfig.appColor))),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () => setState(() {
+                                    isShowFull = !isShowFull;
+                                  }),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: ThemeConfig.appColorLighting),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 0),
+                                  child: Icon(
+                                      isShowFull
+                                          ? Icons.keyboard_arrow_up_rounded
+                                          : Icons.keyboard_arrow_down_rounded,
+                                      color: ThemeConfig.appColor))),
+                          Text("#${(widget.index + 1)}",
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: ThemeConfig.colorBlackSecondary))
+                        ]),
                     top: 8)
               ],
             ),

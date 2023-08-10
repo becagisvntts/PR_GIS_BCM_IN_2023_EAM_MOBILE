@@ -7,6 +7,7 @@ class ClassesState {
   late DataList classCards;
   late DataList classAttributes;
   late bool loading;
+  late bool loadingMore;
   late bool loadingClassDetail;
   late RequestPayload requestPayload;
 
@@ -16,6 +17,7 @@ class ClassesState {
       DataList? classCards,
       DataList? classAttributes,
       this.loading = false,
+      this.loadingMore = false,
       this.loadingClassDetail = false,
       RequestPayload? requestPayload}) {
     this.list = list ?? DataList();
@@ -30,6 +32,7 @@ class ClassesState {
       DataList? classCards,
       DataList? classAttributes,
       bool? loading,
+      bool? loadingMore,
       bool? loadingClassDetail,
       RequestPayload? requestPayload}) {
     return ClassesState(
@@ -38,6 +41,7 @@ class ClassesState {
         classCards: classCards ?? this.classCards,
         classAttributes: classAttributes ?? this.classAttributes,
         loading: loading ?? this.loading,
+        loadingMore: loadingMore ?? this.loadingMore,
         loadingClassDetail: loadingClassDetail ?? this.loadingClassDetail,
         requestPayload: requestPayload ?? this.requestPayload);
   }

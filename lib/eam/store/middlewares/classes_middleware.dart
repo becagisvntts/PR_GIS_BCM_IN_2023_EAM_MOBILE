@@ -27,10 +27,8 @@ class ClassesMiddleware implements MiddlewareClass<AppState> {
       Store<AppState> store, action, NextDispatcher next) async {
     next(action);
 
-    var data = await ClassesService.fetchClassDetail(action.activeClass["_id"]);
-    DataList classAttributes = data[0] as DataList;
-    DataList classCards = data[1] as DataList;
-    store.dispatch(FetchClassDetailSuccessAction(
-        attributes: classAttributes, cards: classCards));
+    DataList list =
+        await ClassesService.fetchClassAttributes(action.activeClass["_id"]);
+    store.dispatch(FetchClassAttributesSuccessAction(list: list));
   }
 }

@@ -10,6 +10,9 @@ class ClassesConfig {
   static const String firstLoadClassName = "TLCInfraSitePOP";
   static const String classTitleByKey = "description";
   static const String attributeShowInGridByKey = "showInGrid";
+  static const String attributeSortingEnableByKey = "sortingEnabled";
   static const String attributeNameByKey = "name";
   static const String attributeTitleByKey = "description";
+  static const String defaultAttributeSortingByKey = "Description";
+  static const String defaultDirectionSorting = "ASC";
 }

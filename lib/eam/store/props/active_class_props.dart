@@ -5,22 +5,22 @@ import 'package:redux/redux.dart';
 
 class ActiveClassProps {
   final Map<String, dynamic> activeClass;
-  final DataList attributes;
   final DataList cards;
+  final DataList attributes;
   final bool loading;
 
   ActiveClassProps(
       {required this.activeClass,
-      required this.attributes,
       required this.cards,
+      required this.attributes,
       required this.loading});
 
   static ActiveClassProps mapStateToProps(Store<AppState> store) {
     ClassesState classesState = store.state.eamState.classesState;
     return ActiveClassProps(
         activeClass: classesState.activeClass,
-        attributes: classesState.classAttributes,
         cards: classesState.classCards,
+        attributes: classesState.classAttributes,
         loading: classesState.loadingClassDetail);
   }
 }

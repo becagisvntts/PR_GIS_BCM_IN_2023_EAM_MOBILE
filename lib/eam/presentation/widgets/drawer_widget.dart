@@ -16,7 +16,8 @@ class DrawerWidget extends StatefulWidget {
   State<StatefulWidget> createState() => DrawerWidgetState();
 }
 
-class DrawerWidgetState extends State<DrawerWidget> {
+class DrawerWidgetState extends State<DrawerWidget>
+    with AutomaticKeepAliveClientMixin {
   AppInfo appInfo = StateHelper.coreState.appInfo;
   Map<String, dynamic> menu = StateHelper.eamState.menuState.menu;
   List<String> validatedType = StateHelper.eamState.menuState.validatedType;
@@ -42,6 +43,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Drawer(
         width: 350,
         shape: const RoundedRectangleBorder(
@@ -111,4 +113,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
               ])
             ]));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
