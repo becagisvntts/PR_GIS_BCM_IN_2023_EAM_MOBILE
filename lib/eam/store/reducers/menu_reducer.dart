@@ -7,6 +7,14 @@ MenuState menuReducer(MenuState prevState, action) {
       return prevState.copyWith(loading: true);
     case FetchMenuSuccessAction:
       return prevState.copyWith(menu: action.menu, loading: false);
+    case UpdateExpandedNodeIds:
+      List<String> expandedNodeIds = [...prevState.expandedNodeIds];
+      if (action.expanded && !expandedNodeIds.contains(action.nodeId)) {
+        expandedNodeIds.add(action.nodeId);
+      } else if (!action.expanded && expandedNodeIds.contains(action.nodeId)) {
+        expandedNodeIds.remove(action.nodeId);
+      }
+      return prevState.copyWith(expandedNodeIds: expandedNodeIds);
     default:
       return prevState;
   }

@@ -1,25 +1,25 @@
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/classes_state.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/class_state.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/menu_state.dart';
 
 class EamState {
-  late ClassesState classesState;
+  late ClassState classState;
   late MenuState menuState;
 
   factory EamState.initialState() => EamState.empty();
 
   EamState.empty() {
-    classesState = ClassesState();
+    classState = ClassState();
     menuState = MenuState();
   }
 
-  EamState({ClassesState? classesState, MenuState? menuState}) {
-    this.classesState = classesState ?? ClassesState();
+  EamState({ClassState? classState, MenuState? menuState}) {
+    this.classState = classState ?? ClassState();
     this.menuState = menuState ?? MenuState();
   }
 
-  EamState copyWith({ClassesState? classesState, MenuState? menuState}) {
+  EamState copyWith({ClassState? classState, MenuState? menuState}) {
     return EamState(
-        classesState: classesState ?? this.classesState,
+        classState: classState ?? this.classState,
         menuState: menuState ?? this.menuState);
   }
 }

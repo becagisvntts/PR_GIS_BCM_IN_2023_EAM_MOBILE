@@ -58,7 +58,7 @@ class EAMAppState extends State<EAMApp> {
         unselectedWidgetColor: ThemeConfig.appColor,
         // buttonTheme: ButtonThemeData(buttonColor: ThemeConfig.appColor),
         appBarTheme: AppBarTheme(
-            color: ThemeConfig.appColor,
+            backgroundColor: ThemeConfig.appColor,
             iconTheme: const IconThemeData(color: ThemeConfig.colorWhite),
             titleTextStyle: GoogleFonts.poppins(
                 color: ThemeConfig.colorWhite,

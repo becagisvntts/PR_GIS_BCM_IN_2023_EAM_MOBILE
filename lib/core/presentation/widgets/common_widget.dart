@@ -27,7 +27,7 @@ Widget PageContent({required Widget child}) {
 }
 
 Widget HeadingText(String title,
-    {double? fontSize = 16,
+    {double fontSize = 16,
     IconData? icon,
     double top = 4,
     double bottom = 8,
@@ -35,20 +35,20 @@ Widget HeadingText(String title,
   return Padding(
       padding: EdgeInsets.fromLTRB(0, top, 0, bottom),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (icon != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-              child: Icon(icon, color: color, size: fontSize),
-            ),
-          Text(
-            title,
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: fontSize, color: color),
-          )
-        ],
-      ));
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (icon != null)
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                  child: Icon(icon, color: color, size: (fontSize + 2))),
+            Flexible(
+                child: Text(title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: fontSize,
+                        color: color)))
+          ]));
 }
 
 Widget ButtonDrawer(String title, Function onPressed,
@@ -139,12 +139,11 @@ Widget ActionButton2(String title, Function onPressed,
 InputDecoration FormInputDecoration({String? placeholder}) {
   return InputDecoration(
       border: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        borderSide: BorderSide(
-          width: 0,
-          style: BorderStyle.none,
-        ),
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(
+            width: 0,
+            style: BorderStyle.none,
+          )),
       filled: true,
       fillColor: ThemeConfig.appColorLighting,
       labelText: placeholder ?? "",
@@ -324,24 +323,21 @@ void showCustomBottomSheet(
                 children: [
               PaddingWrapper(
                   child: Row(
-                    mainAxisAlignment: actions.isEmpty
-                        ? MainAxisAlignment.center
-                        : MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: ThemeConfig.appColor),
-                      ),
-                      Row(
-                        children: [
+                      mainAxisAlignment: actions.isEmpty
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: ThemeConfig.appColor),
+                        ),
+                        Row(children: [
                           for (Widget action in actions) action,
-                        ],
-                      )
-                    ],
-                  ),
+                        ])
+                      ]),
                   top: 12,
                   left: 16,
                   right: 16),

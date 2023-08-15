@@ -1,6 +1,6 @@
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_service.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/actions/classes_action.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/actions/class_action.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/app_state.dart';
 import 'package:redux/redux.dart';
 
@@ -19,7 +19,7 @@ class ClassesMiddleware implements MiddlewareClass<AppState> {
   void fetchClasses(Store<AppState> store, action, NextDispatcher next) async {
     next(action);
 
-    DataList list = await ClassesService.fetchClasses();
+    DataList list = await ClassService.fetchClasses();
     store.dispatch(FetchClassesSuccessAction(list: list));
   }
 
@@ -28,7 +28,7 @@ class ClassesMiddleware implements MiddlewareClass<AppState> {
     next(action);
 
     DataList list =
-        await ClassesService.fetchClassAttributes(action.activeClass["_id"]);
+        await ClassService.fetchClassAttributes(action.activeClass["_id"]);
     store.dispatch(FetchClassAttributesSuccessAction(list: list));
   }
 }

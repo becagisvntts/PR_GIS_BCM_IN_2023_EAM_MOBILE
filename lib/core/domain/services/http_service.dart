@@ -19,11 +19,9 @@ class HttpService {
       String? sessionId}) async {
     bool isOnline = await checkConnection();
     if (isOnline) {
-      var response = await http.post(
-        Uri.parse(endpoint),
-        headers: getHeaders(sessionId),
-        body: jsonEncode(body),
-      );
+      var response = await http.post(Uri.parse(endpoint),
+          headers: getHeaders(sessionId), body: jsonEncode(body));
+
       checkAuthorizationResponseAndRedirect(response);
       return response;
     }
@@ -33,7 +31,7 @@ class HttpService {
   static Future<http.Response> postWithAuth(
       {required String endpoint, Map<String, dynamic>? body}) async {
     String? sessionId = await AuthService.getSessionId();
-    return await post(endpoint: endpoint, body: body, sessionId: sessionId);
+    return await post(endpoint: endpoint, sessionId: sessionId, body: body);
   }
 
   static Future<http.Response> get(
@@ -109,7 +107,7 @@ class HttpService {
     if (isOnline) {
       var request = http.MultipartRequest('POST', Uri.parse(endpoint));
       request.files.add(await http.MultipartFile.fromPath('file', filePath));
-      request.headers.addAll({'Authorization': 'Bearer $sessionId'});
+      request.headers.addAll({'Cmdbuild-authorization': sessionId ?? ""});
       var response = await request.send();
       return response;
     }

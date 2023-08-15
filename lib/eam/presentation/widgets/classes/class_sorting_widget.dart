@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
 class ClassSortingWidget extends StatefulWidget {
@@ -21,9 +21,9 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
   };
 
   late String propertySelected =
-      StateHelper.eamState.classesState.requestPayload.propertySorting;
+      StateHelper.eamState.classState.requestPayload.propertySorting;
   late String directionSelected =
-      StateHelper.eamState.classesState.requestPayload.directionSorting;
+      StateHelper.eamState.classState.requestPayload.directionSorting;
 
   @override
   void initState() {
@@ -32,15 +32,14 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
   }
 
   void getSortingAttributes() {
-    DataList classAttributes =
-        StateHelper.eamState.classesState.classAttributes;
+    DataList classAttributes = StateHelper.eamState.classState.classAttributes;
     for (int i = 0; i < classAttributes.data.length; i++) {
       Map<String, dynamic> attribute = classAttributes.data[i];
-      if (attribute[ClassesConfig.attributeShowInGridByKey] &&
-          attribute[ClassesConfig.attributeSortingEnableByKey]) {
+      if (attribute[ClassConfig.attributeShowInGridByKey] &&
+          attribute[ClassConfig.attributeSortingEnableByKey]) {
         sortingAttributes.add(DropdownMenuItem(
-            value: attribute[ClassesConfig.attributeNameByKey],
-            child: Text(attribute[ClassesConfig.attributeTitleByKey])));
+            value: attribute[ClassConfig.attributeNameByKey],
+            child: Text(attribute[ClassConfig.attributeTitleByKey])));
       }
     }
   }

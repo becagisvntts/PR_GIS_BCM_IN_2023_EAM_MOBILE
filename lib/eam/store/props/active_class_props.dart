@@ -1,5 +1,5 @@
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/classes_state.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/class_state.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/app_state.dart';
 import 'package:redux/redux.dart';
 
@@ -16,11 +16,11 @@ class ActiveClassProps {
       required this.loading});
 
   static ActiveClassProps mapStateToProps(Store<AppState> store) {
-    ClassesState classesState = store.state.eamState.classesState;
+    ClassState classesState = store.state.eamState.classState;
     return ActiveClassProps(
         activeClass: classesState.activeClass,
         cards: classesState.classCards,
         attributes: classesState.classAttributes,
-        loading: classesState.loadingClassDetail);
+        loading: classesState.loadingAttributes);
   }
 }

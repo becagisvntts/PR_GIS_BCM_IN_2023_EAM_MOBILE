@@ -1,5 +1,5 @@
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/classes_state.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/class_state.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/menu_state.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/app_state.dart';
 import 'package:redux/redux.dart';
@@ -17,7 +17,7 @@ class MenuProps {
       required this.loadingClasses});
 
   static MenuProps mapStateToProps(Store<AppState> store) {
-    ClassesState classesState = store.state.eamState.classesState;
+    ClassState classesState = store.state.eamState.classState;
     MenuState menuState = store.state.eamState.menuState;
     return MenuProps(
         classes: classesState.list,

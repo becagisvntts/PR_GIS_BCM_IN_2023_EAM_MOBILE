@@ -5,9 +5,11 @@ abstract class ClassAttribute {
   String type = "text";
   String name = "attribute";
   String description = "description";
+  bool writable = true;
+  bool mandatory = false;
+  bool immutable = false;
+  dynamic autoValue;
   dynamic value;
-  dynamic valueCode;
-  dynamic valueDescription;
 
   ClassAttribute() {
     initProperties();
@@ -21,12 +23,6 @@ abstract class ClassAttribute {
 
   Widget getValueAsWidget() {
     return Text(getValueAsString());
-  }
-
-  void syncAttributeConfig(Map<String, dynamic> attributeConfig) {
-    attrId = attributeConfig["_id"];
-    name = attributeConfig["name"];
-    description = attributeConfig["description"];
   }
 
   void syncDataFromCard(Map<String, dynamic> card) {
@@ -46,8 +42,31 @@ abstract class ClassAttribute {
             attributeConfig.containsKey("name") ? attributeConfig["name"] : name
         ..description = attributeConfig.containsKey("description")
             ? attributeConfig["description"]
-            : description;
+            : description
+        ..value = attributeConfig.containsKey("defaultValue")
+            ? attributeConfig["defaultValue"]
+            : ""
+        ..autoValue = attributeConfig.containsKey("autoValue")
+            ? attributeConfig["autoValue"]
+            : ""
+        ..writable = attributeConfig.containsKey("writable")
+            ? attributeConfig["writable"]
+            : ""
+        ..mandatory = attributeConfig.containsKey("mandatory")
+            ? attributeConfig["mandatory"]
+            : ""
+        ..immutable = attributeConfig.containsKey("immutable")
+            ? attributeConfig["immutable"]
+            : "";
       return clone;
     }
   }
+
+  Future<Map<String, dynamic>> formatBeforeSubmit(
+      Map<String, dynamic> formData) async {
+    if (formData[name] == "") formData[name] = null;
+    return formData;
+  }
+
+  Widget getFormField();
 }

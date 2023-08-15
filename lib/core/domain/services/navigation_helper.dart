@@ -21,8 +21,8 @@ class NavigationHelper {
     }
   }
 
-  static pop() {
-    Navigator.of(navigatorKey.currentContext!).pop();
+  static void pop({String? message}) {
+    return Navigator.of(navigatorKey.currentContext!).pop(message);
   }
 
   static popUtil(String routeName) {

@@ -4,8 +4,10 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.da
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/tree_node.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_config.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/classes_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/actions/menu_action.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
 class ButtonTreeNode extends StatefulWidget {
   final TreeNode node;
@@ -18,26 +20,51 @@ class ButtonTreeNode extends StatefulWidget {
 }
 
 class ButtonTreeNodeState extends State<ButtonTreeNode> {
+  late String? activeClassName;
   late bool isFolder = false;
 
   @override
   void initState() {
+    isFolder = widget.node.menuType == ClassConfig.menuTypeFolder;
+    Map<String, dynamic> activeClass =
+        StateHelper.eamState.classState.activeClass;
+    activeClassName =
+        activeClass.isNotEmpty ? activeClass[ClassConfig.classTypeByKey] : "";
     super.initState();
-    isFolder = widget.node.menuType == ClassesConfig.menuTypeFolder;
   }
 
   void changeActiveClass(TreeNode node) {
-    ClassesService.findAndChangeActiveClass(node.objectTypeName ?? "");
+    ClassService.findAndChangeActiveClass(node.objectTypeName ?? "");
     NavigationHelper.pop();
+  }
+
+  bool isOrContainActiveClass(TreeNode node) {
+    if (node.objectTypeName == activeClassName) {
+      return true;
+    }
+    for (TreeNode node in node.children) {
+      if (isOrContainActiveClass(node)) return true;
+    }
+    return false;
+  }
+
+  void toggleExpandNode() {
+    widget.treeController.toggleExpansion(widget.node);
+    StateHelper.store.dispatch(UpdateExpandedNodeIds(
+        nodeId: widget.node.id,
+        expanded: widget.treeController.getExpansionState(widget.node)));
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () => isFolder
-            ? widget.treeController.toggleExpansion(widget.node)
-            : changeActiveClass(widget.node),
-        child: Padding(
+        onTap: () =>
+            isFolder ? toggleExpandNode() : changeActiveClass(widget.node),
+        child: Container(
+            decoration: BoxDecoration(
+                color: isOrContainActiveClass(widget.node)
+                    ? ThemeConfig.appColorSecondaryLighting
+                    : ThemeConfig.colorWhite),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +77,9 @@ class ButtonTreeNodeState extends State<ButtonTreeNode> {
                                 ? Icons.folder_copy_rounded
                                 : Icons.class_rounded,
                             size: 16,
-                            color: ThemeConfig.appColor),
+                            color: isFolder
+                                ? ThemeConfig.appColor
+                                : ThemeConfig.appColorSecondary),
                         right: 12),
                     Expanded(
                         child: Text(widget.node.objectDescription,

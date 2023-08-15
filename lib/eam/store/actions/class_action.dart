@@ -18,11 +18,24 @@ class FetchClassAttributesSuccessAction {
   FetchClassAttributesSuccessAction({required this.list});
 }
 
-class FetchClassCardsAction {}
-
 class FetchClassCardsSuccessAction {
   DataList list;
   FetchClassCardsSuccessAction({required this.list});
+}
+
+class FetchClassDomainsSuccessAction {
+  DataList list;
+  FetchClassDomainsSuccessAction({required this.list});
+}
+
+class FetchClassAttributesOfDomainsSuccessAction {
+  List<DataList> list;
+  FetchClassAttributesOfDomainsSuccessAction({required this.list});
+}
+
+class FetchCardDetailSuccessAction {
+  Map<String, dynamic> cardDetail;
+  FetchCardDetailSuccessAction({required this.cardDetail});
 }
 
 class UpdateRequestPayloadAction {

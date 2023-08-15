@@ -12,7 +12,7 @@ class ClassSearchingWidget extends StatefulWidget {
 
 class ClassSearchingWidgetState extends State<ClassSearchingWidget> {
   TextEditingController searchController = TextEditingController(
-      text: StateHelper.eamState.classesState.requestPayload.queryKeyword);
+      text: StateHelper.eamState.classState.requestPayload.queryKeyword);
 
   void searchCards(String keyword) {
     widget.onSearch(keyword);

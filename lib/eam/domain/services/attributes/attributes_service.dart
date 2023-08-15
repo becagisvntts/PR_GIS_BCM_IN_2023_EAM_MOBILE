@@ -1,5 +1,6 @@
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/date_attribute.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/file_attribute.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/lookup_attribute.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/number_attribute.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/reference_attribute.dart';
@@ -12,13 +13,15 @@ class AttributeService {
   static const String typeDate = "date";
   static const String typeLookup = "lookup";
   static const String typeEntryType = "entryType";
+  static const String typeFile = "file";
 
   static List<ClassAttribute> listClassAttributes = [
     ReferenceAttribute(),
     NumberAttribute(),
     TextAttribute(),
     DateAttribute(),
-    LookupAttribute()
+    LookupAttribute(),
+    FileAttribute()
   ];
 
   static ClassAttribute getCopyClassAttributeByAttributeConfig(

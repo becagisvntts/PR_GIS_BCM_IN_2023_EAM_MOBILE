@@ -13,7 +13,7 @@ class DataListMeta {
   DataListMeta.fromJson(Map<String, dynamic> json) {
     total = json.containsKey("total") ? json["total"] : 0;
     RequestPayload requestPayload =
-        StateHelper.eamState.classesState.requestPayload;
+        StateHelper.eamState.classState.requestPayload;
     page = requestPayload.page;
     pageSize = requestPayload.limit;
     totalPages = (total * 1.0 / pageSize).ceil();

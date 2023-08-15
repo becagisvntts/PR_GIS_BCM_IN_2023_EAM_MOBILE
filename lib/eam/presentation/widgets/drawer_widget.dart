@@ -6,6 +6,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/auth_service.
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/tree_node.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/btn_tree_node.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
@@ -22,17 +23,33 @@ class DrawerWidgetState extends State<DrawerWidget>
   Map<String, dynamic> menu = StateHelper.eamState.menuState.menu;
   List<String> validatedType = StateHelper.eamState.menuState.validatedType;
   late TreeController<TreeNode> treeController;
+  late List<TreeNode> menuNodes;
 
   @override
   void initState() {
-    super.initState();
-    List<TreeNode> menuNodes =
+    menuNodes =
         (menu["children"] as List).map((e) => TreeNode.fromJson(e)).toList();
     menuNodes = menuNodes
         .where((element) => validatedType.contains(element.menuType))
         .toList();
     treeController = TreeController<TreeNode>(
         roots: menuNodes, childrenProvider: (TreeNode node) => node.children);
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => expandNodeContainActiveClass(menuNodes));
+  }
+
+  void expandNodeContainActiveClass(List<TreeNode> nodes) {
+    List<String> expandedNodeIds =
+        StateHelper.eamState.menuState.expandedNodeIds;
+    for (TreeNode node in nodes) {
+      if (node.menuType == ClassConfig.menuTypeFolder) {
+        if (expandedNodeIds.contains(node.id)) {
+          treeController.expand(node);
+        }
+        expandNodeContainActiveClass(node.children);
+      }
+    }
   }
 
   @override
@@ -45,7 +62,7 @@ class DrawerWidgetState extends State<DrawerWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Drawer(
-        width: 350,
+        width: 300,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(0))),
         child: Column(

@@ -7,7 +7,7 @@ class TreeNode {
   late String objectDescriptionTranslation;
   late List<TreeNode> children;
   late int index;
-  late String? objectTypeName;
+  String? objectTypeName;
 
   TreeNode(
       {required this.id,

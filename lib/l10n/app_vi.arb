@@ -5,6 +5,7 @@
   "cm_lang_en": "Tiếng Anh",
   "cm_setting": "Cài đặt",
   "cm_save": "Lưu",
+  "cm_save_and_close": "Lưu và đóng",
   "cm_save_image": "Lưu hình ảnh",
   "cm_save_video": "Lưu video",
   "cm_save_audio": "Lưu âm thanh",
@@ -30,6 +31,11 @@
   "cm_try_again": "Thử lại",
   "cm_action": "Thao tác",
   "cm_from_to": "Từ {from} đến {to}",
+  "cm_open": "Mở",
+  "cm_close": "Đóng",
+  "cm_browse_file": "Chọn",
+  "cm_browse_file_from_gallery": "Thư viện",
+  "cm_browse_file_from_camera": "Camera",
   "msg_no_internet": "Không có kết nối internet",
   "msg_delete_success": "Xóa {object} thành công",
   "msg_delete_fail": "Xóa {object} thất bại",
@@ -70,5 +76,6 @@
   "user_login_with": "Đăng nhập với",
   "user_username": "Tên đăng nhập",
   "user_register": "Đăng ký tài khoản",
-  "eam_list_count": "{value} các mục"
+  "eam_list_count": "{value} các mục",
+  "card_delete_msg_confirm": "Bạn có chắc chắn xóa thẻ này? Các mối quan hệ cũng sẽ bị xóa."
 }

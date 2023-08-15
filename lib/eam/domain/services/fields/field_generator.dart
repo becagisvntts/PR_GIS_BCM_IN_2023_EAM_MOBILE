@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/date_time_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/string_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 
@@ -11,49 +14,58 @@ class FieldGenerator {
   static FormBuilderTextField generateTextField(
       {required String name,
       required String label,
-      String? initialValue,
+      String? value,
       bool required = false,
-      bool readOnly = false,
+      bool enabled = true,
+      int minLines = 1,
+      int maxLines = 1,
       String subType = "text",
       int? maxLength}) {
     return FormBuilderTextField(
-      key: ValueKey("$name-$initialValue"),
-      decoration: FormInputDecoration(placeholder: label),
-      name: name,
-      initialValue: initialValue ?? "",
-      keyboardType: TextInputType.text,
-      readOnly: readOnly,
-      textInputAction: TextInputAction.next,
-      validator: (val) {
-        if (required && (val == null || val.trim().isEmpty)) {
-          return LocalizationService.translate.msg_field_required(label);
-        }
+        key: ValueKey("$name-$value"),
+        decoration: FormInputDecoration(placeholder: label),
+        name: name,
+        initialValue: value ?? "",
+        keyboardType: TextInputType.text,
+        enabled: enabled,
+        minLines: minLines,
+        maxLines: max(minLines, maxLines),
+        textInputAction: TextInputAction.next,
+        onTapOutside: (event) =>
+            FocusScope.of(NavigationHelper.navigatorKey.currentContext!)
+                .unfocus(),
+        validator: (val) {
+          if (required && (val == null || val.trim().isEmpty)) {
+            return LocalizationService.translate.msg_field_required(label);
+          }
 
-        if (maxLength != null && val != null && val.length > maxLength) {
-          return LocalizationService.translate
-              .msg_field_max_length(label, maxLength);
-        }
-        return null;
-      },
-    );
+          if (maxLength != null && val != null && val.length > maxLength) {
+            return LocalizationService.translate
+                .msg_field_max_length(label, maxLength);
+          }
+          return null;
+        });
   }
 
   static FormBuilderTextField generateNumberField(
       {required String name,
       required String label,
-      String? initialValue,
+      String? value,
       bool required = false,
-      bool readOnly = false,
+      bool enabled = true,
       int? minValue,
       int? maxValue}) {
     return FormBuilderTextField(
-      key: ValueKey("$name-$initialValue"),
+      key: ValueKey("$name-$value"),
       decoration: FormInputDecoration(placeholder: label),
       name: name,
-      initialValue: initialValue ?? "",
+      initialValue: value ?? "",
       keyboardType: TextInputType.number,
-      readOnly: readOnly,
+      enabled: enabled,
       textInputAction: TextInputAction.next,
+      onTapOutside: (event) =>
+          FocusScope.of(NavigationHelper.navigatorKey.currentContext!)
+              .unfocus(),
       validator: (val) {
         if (required && (val == null || val.trim().isEmpty)) {
           return LocalizationService.translate.msg_field_required(label);
@@ -79,55 +91,17 @@ class FieldGenerator {
   static FormBuilderDropdown generateSelectField(
       {required String name,
       required String label,
-      String? initialValue,
+      dynamic value,
       bool required = false,
-      bool readOnly = false,
-      Map<String, String> options = const <String, String>{},
+      bool enabled = true,
+      List<DropdownMenuItem> dropdownItems = const [],
       Function? onChanged}) {
-    List<DropdownMenuItem> dropdownItems = [];
-    options.forEach((key, value) {
-      dropdownItems.add(DropdownMenuItem(value: key, child: Text(value)));
-    });
     return FormBuilderDropdown(
-      key: ValueKey("$name-$initialValue"),
+      key: ValueKey("$name-$value"),
       decoration: FormInputDecoration(placeholder: label),
-      initialValue: initialValue ?? "",
+      initialValue: value ?? "",
       name: name,
-      isExpanded: !readOnly,
-      items: dropdownItems,
-      onChanged: (value) => onChanged?.call(value),
-      dropdownColor: Colors.white,
-      borderRadius: BorderRadius.circular(8),
-      menuMaxHeight: 300,
-      validator: (val) {
-        if (required && (val == null || val.trim().isEmpty)) {
-          return LocalizationService.translate.msg_field_required(label);
-        }
-        return null;
-      },
-    );
-  }
-
-  static FormBuilderDropdown generateDropdownField(
-      {required String name,
-      required String label,
-      dynamic initialValue,
-      bool required = false,
-      bool readOnly = false,
-      List<Map<String, dynamic>> options = const [],
-      Function? onChanged}) {
-    List<DropdownMenuItem> dropdownItems = [];
-    for (Map<String, dynamic> option in options) {
-      dropdownItems.add(DropdownMenuItem(
-          value: option['name'].toString(), child: Text(option['label'])));
-    }
-
-    return FormBuilderDropdown(
-      key: ValueKey("$name-$initialValue"),
-      decoration: FormInputDecoration(placeholder: label),
-      initialValue: initialValue,
-      name: name,
-      isExpanded: !readOnly,
+      enabled: enabled,
       items: dropdownItems,
       onChanged: (value) => onChanged?.call(value),
       dropdownColor: Colors.white,
@@ -145,16 +119,16 @@ class FieldGenerator {
   static FormBuilderCheckbox generateCheckboxField(
       {required String name,
       required String label,
-      bool initialValue = false,
-      bool readOnly = false,
+      bool value = false,
+      bool enabled = true,
       Function? onChanged}) {
     return FormBuilderCheckbox(
-        key: ValueKey("$name-$initialValue"),
+        key: ValueKey("$name-$value"),
         decoration: const InputDecoration(
             border: InputBorder.none, contentPadding: EdgeInsets.all(0)),
         name: name,
-        enabled: !readOnly,
-        initialValue: initialValue,
+        enabled: enabled,
+        initialValue: value,
         title: Text(label, style: const TextStyle(fontSize: 16)),
         controlAffinity: ListTileControlAffinity.leading,
         contentPadding: const EdgeInsets.all(0),
@@ -165,9 +139,9 @@ class FieldGenerator {
   static FormBuilderCheckboxGroup generateCheckboxGroupField(
       {required String name,
       required String label,
-      List<dynamic>? initialValue,
+      List<dynamic>? value,
       bool required = false,
-      bool readOnly = false,
+      bool enabled = true,
       List<Map<String, dynamic>> options = const []}) {
     List<FormBuilderFieldOption> checkboxGroupItems = [];
     for (Map<String, dynamic> option in options) {
@@ -176,12 +150,12 @@ class FieldGenerator {
           child: Text(option['label'], style: const TextStyle(fontSize: 16))));
     }
     return FormBuilderCheckboxGroup(
-        key: ValueKey("$name-$initialValue"),
+        key: ValueKey("$name-$value"),
         decoration: const InputDecoration(
             border: InputBorder.none, contentPadding: EdgeInsets.all(0)),
         name: name,
-        initialValue: initialValue,
-        enabled: !readOnly,
+        initialValue: value,
+        enabled: enabled,
         orientation: OptionsOrientation.vertical,
         options: checkboxGroupItems,
         activeColor: ThemeConfig.appColor);
@@ -190,9 +164,9 @@ class FieldGenerator {
   static FormBuilderRadioGroup generateRadioGroupField(
       {required String name,
       required String label,
-      dynamic initialValue,
+      dynamic value,
       bool required = false,
-      bool readOnly = false,
+      bool enabled = true,
       List<Map<String, dynamic>> options = const []}) {
     List<FormBuilderFieldOption> radioGroupOptions = [];
     for (Map<String, dynamic> option in options) {
@@ -201,12 +175,12 @@ class FieldGenerator {
           child: Text(option['label'], style: const TextStyle(fontSize: 16))));
     }
     return FormBuilderRadioGroup(
-      key: ValueKey("$name-$initialValue"),
+      key: ValueKey("$name-$value"),
       decoration: const InputDecoration(
           border: InputBorder.none, contentPadding: EdgeInsets.all(0)),
       name: name,
-      initialValue: initialValue,
-      enabled: !readOnly,
+      initialValue: value,
+      enabled: enabled,
       orientation: OptionsOrientation.vertical,
       options: radioGroupOptions,
     );
@@ -215,18 +189,18 @@ class FieldGenerator {
   static FormBuilderDateTimePicker generateDateTimeField({
     required String name,
     required String label,
-    DateTime? initialValue,
+    DateTime? value,
     bool required = false,
-    bool readOnly = false,
+    bool enabled = true,
   }) {
     return FormBuilderDateTimePicker(
-      key: ValueKey("$name-$initialValue"),
+      key: ValueKey("$name-$value"),
       name: name,
       decoration: FormInputDecoration(placeholder: label),
       inputType: InputType.date,
-      enabled: !readOnly,
+      enabled: enabled,
       format: DateFormat("dd-MM-yyyy"),
-      initialValue: initialValue,
+      initialValue: value,
       validator: (val) {
         if (required) {
           if (val == null) {
@@ -239,5 +213,16 @@ class FieldGenerator {
         return null;
       },
     );
+  }
+
+  static FormBuilderField hiddenField(
+      {Key? key, required String name, dynamic value}) {
+    return FormBuilderField(
+        key: key,
+        builder: (FormFieldState<dynamic> field) {
+          return Container();
+        },
+        initialValue: value,
+        name: name);
   }
 }

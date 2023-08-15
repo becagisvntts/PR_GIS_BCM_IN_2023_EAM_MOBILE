@@ -5,6 +5,7 @@
   "cm_lang_en": "English",
   "cm_setting": "Settings",
   "cm_save": "Save",
+  "cm_save_and_close": "Save and close",
   "cm_save_image": "Save image",
   "cm_save_video": "Save video",
   "cm_save_audio": "Save sound",
@@ -30,6 +31,11 @@
   "cm_try_again": "Try again",
   "cm_action": "Actions",
   "cm_from_to": "From {from} to {to}",
+  "cm_open": "Open",
+  "cm_close": "Close",
+  "cm_browse_file": "Browse",
+  "cm_browse_file_from_gallery": "Library",
+  "cm_browse_file_from_camera": "Camera",
   "msg_no_internet": "No internet",
   "msg_delete_success": "Delete {object} successfully",
   "msg_delete_fail": "Delete {object} failed",
@@ -70,5 +76,6 @@
   "user_login_with": "Login with",
   "user_username": "Username",
   "user_register": "Register account",
-  "eam_list_count": "{value} cards"
+  "eam_list_count": "{value} cards",
+  "card_delete_msg_confirm": "Are you sure to delete this card? Related data also will be delete."
 }
