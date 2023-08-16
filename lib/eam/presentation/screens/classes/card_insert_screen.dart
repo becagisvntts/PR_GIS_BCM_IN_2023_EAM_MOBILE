@@ -5,6 +5,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/future_button.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes_service.dart';
@@ -143,16 +144,17 @@ class CardInsertScreenState extends State<CardInsertScreen> {
                         child: Row(children: [
                           Expanded(
                               child: PaddingWrapper(
-                                  child: BaseButton(
-                                      LocalizationService.translate.cm_save,
+                                  child: FutureButton(
+                                      btnName:
+                                          LocalizationService.translate.cm_save,
                                       onPressed: () =>
                                           insertCard(isViewDetail: true),
                                       iconData: Icons.save_rounded),
                                   right: 4)),
                           Expanded(
                               child: PaddingWrapper(
-                                  child: BaseButton(
-                                      LocalizationService
+                                  child: FutureButton(
+                                      btnName: LocalizationService
                                           .translate.cm_save_and_close,
                                       onPressed: () =>
                                           insertCard(isViewDetail: false),

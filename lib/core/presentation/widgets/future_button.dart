@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/http_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 
 class FutureButton extends StatefulWidget {
@@ -36,6 +37,7 @@ class _FutureButtonState extends State<FutureButton> {
         _onProcessing = true;
       });
       try {
+        HttpService.disabledInteractionOnRequesting();
         await widget.onPressed();
       } catch (e) {
         rethrow;
@@ -43,6 +45,8 @@ class _FutureButtonState extends State<FutureButton> {
           _onProcessing = false;
         });
       }
+
+      HttpService.closeOverlayLayerBlocking();
       setState(() {
         _onProcessing = false;
       });

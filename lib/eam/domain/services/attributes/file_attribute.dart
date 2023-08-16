@@ -7,7 +7,6 @@ class FileAttribute extends ClassAttribute {
   String dmsCategory = "";
   String dmsModel = "";
   String fileName = "";
-  int fileId = -1;
 
   @override
   void initProperties() {
@@ -15,28 +14,41 @@ class FileAttribute extends ClassAttribute {
   }
 
   @override
+  String getValueAsString() {
+    return fileName;
+  }
+
+  @override
   FileAttribute copyWith(Map<String, dynamic> attributeConfig) {
     FileAttribute clone =
         copyConfigToInstance(FileAttribute(), attributeConfig) as FileAttribute;
-    String _dmsCategory = attributeConfig.containsKey("dmsCategory")
-        ? attributeConfig["dmsCategory"]
-        : dmsCategory;
     return clone
       ..dmsModel = attributeConfig.containsKey("dmsModel")
           ? attributeConfig["dmsModel"]
           : dmsModel
-      ..dmsCategory = _dmsCategory
-      ..fileName = attributeConfig.containsKey("_${_dmsCategory}_FileName")
-          ? attributeConfig["_${_dmsCategory}_FileName"]
-          : fileName
-      ..fileId = attributeConfig.containsKey("_${_dmsCategory}_card")
-          ? attributeConfig["_${_dmsCategory}_card"]
-          : fileId;
+      ..dmsCategory = attributeConfig.containsKey("dmsCategory")
+          ? attributeConfig["dmsCategory"]
+          : dmsCategory;
+  }
+
+  @override
+  void syncDataFromCard(Map<String, dynamic> card) {
+    super.syncDataFromCard(card);
+    if (card.containsKey("_${dmsCategory}_FileName")) {
+      fileName = card["_${dmsCategory}_FileName"];
+    }
   }
 
   @override
   Widget getFormField() {
+    bool enabled = writable && (!super.immutable || value == null);
     return BMFileField(
-        name: name, description: '', dmsCategory: '', fileName: '', fileId: 0);
+        name: name,
+        value: value,
+        label: description,
+        dmsCategory: dmsCategory,
+        fileName: fileName,
+        enabled: enabled,
+        required: mandatory);
   }
 }

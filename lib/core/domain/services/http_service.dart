@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/auth_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/connection_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
@@ -148,5 +150,19 @@ class HttpService {
     if (response.statusCode == 401) {
       NavigationHelper.push(const LoginScreen());
     }
+  }
+
+  static void disabledInteractionOnRequesting() {
+    showDialog(
+        context: NavigationHelper.navigatorKey.currentContext!,
+        builder: (BuildContext context) => Dialog.fullscreen(
+            backgroundColor: ThemeConfig.colorBlackSecondary.withAlpha(10),
+            child: const Center(
+              child: Text("Please wait..."),
+            )));
+  }
+
+  static void closeOverlayLayerBlocking() {
+    NavigationHelper.pop();
   }
 }

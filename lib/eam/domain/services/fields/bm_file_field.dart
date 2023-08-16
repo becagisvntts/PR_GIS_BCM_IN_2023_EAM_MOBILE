@@ -6,44 +6,52 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.da
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/file_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/fields/field_generator.dart';
 
 class BMFileField extends StatefulWidget {
   final String name;
   final dynamic value;
-  final String description;
+  final String label;
   final String dmsCategory;
   final String fileName;
-  final int fileId;
+  final bool required;
+  final bool enabled;
   const BMFileField(
       {super.key,
       required this.name,
       this.value,
-      required this.description,
+      required this.label,
       required this.dmsCategory,
       required this.fileName,
-      required this.fileId});
+      required this.required,
+      required this.enabled});
 
   @override
   State<StatefulWidget> createState() => BMFileFieldState();
 }
 
 class BMFileFieldState extends State<BMFileField> {
-  final valueFieldKey = GlobalKey<FormBuilderFieldState>();
-  List<dynamic> selectedFiles = [];
-  List<dynamic> failedMessages = [];
+  final fileIdFieldKey = GlobalKey<FormBuilderFieldState>();
+  final fileNameFieldKey = GlobalKey<FormBuilderFieldState>();
   bool _uploadingFile = false;
-  Map<String, dynamic>? uploadedFileData;
+
+  late dynamic uploadedFileId;
+  late String uploadedFileName;
 
   @override
   void initState() {
-    selectedFiles = widget.value as List<dynamic>;
+    uploadedFileId = widget.value;
+    uploadedFileName = widget.fileName;
+
     super.initState();
   }
 
   void pickFile() async {
     PermissionStatus permissionStatus = await Permission.storage.request();
     if (permissionStatus == PermissionStatus.granted) {
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
 
       if (result != null) {
         setState(() {
@@ -62,20 +70,26 @@ class BMFileFieldState extends State<BMFileField> {
   }
 
   void handleUploadFile(String localPath, String fileName) async {
-    dynamic res = await FileHelper.uploadFile(localPath);
-    if (res == false) {
+    dynamic response = await FileHelper.uploadFile(localPath);
+    if (response == false) {
       NotifyService.showErrorMessage("Không thể upload file");
     } else {
-      uploadedFileData = res as Map<String, dynamic>;
+      uploadedFileId = response["_id"];
+      uploadedFileName = response["name"];
+      fileNameFieldKey.currentState?.didChange(uploadedFileName);
+      fileIdFieldKey.currentState?.setValue(uploadedFileId);
       setState(() {});
     }
   }
 
   void removeFile() async {
-    if (uploadedFileData != null) {
-      bool success = await FileHelper.deleteFile(uploadedFileData?["_id"]);
+    if (uploadedFileId != null && uploadedFileId != "") {
+      bool success = await FileHelper.deleteFile(uploadedFileId);
       if (success) {
-        uploadedFileData = null;
+        uploadedFileId = null;
+        uploadedFileName = "";
+        fileNameFieldKey.currentState?.didChange(uploadedFileName);
+        fileIdFieldKey.currentState?.setValue(uploadedFileId);
         setState(() {});
       } else {
         NotifyService.showErrorMessage("Không thể xóa file");
@@ -85,37 +99,42 @@ class BMFileFieldState extends State<BMFileField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(widget.description,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-        _uploadingFile
-            ? const CircularProgressIndicator()
-            : TextButton(
-                onPressed: pickFile,
-                child: Text(LocalizationService.translate.cm_browse_file))
-      ]),
-      FormBuilderField(
-          key: valueFieldKey,
-          name: widget.name,
-          initialValue: uploadedFileData?["_id"],
-          builder: (FormFieldState<dynamic> field) {
-            return SizedBox(
-                width: double.infinity,
-                child: InputDecorator(
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-                      border: InputBorder.none,
-                      errorText: field.errorText,
-                    ),
-                    child: Row(children: [
-                      Text(uploadedFileData?["name"]),
-                      IconButton(
-                          onPressed: removeFile,
-                          icon: const Icon(Icons.close_rounded,
-                              color: ThemeConfig.colorDanger))
-                    ])));
-          })
+    return Column(children: [
+      FormBuilderTextField(
+          key: fileNameFieldKey,
+          decoration: FormInputDecoration(placeholder: widget.label).copyWith(
+              suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                if (uploadedFileId != null && uploadedFileId != "")
+                  IconButton(
+                      onPressed: removeFile,
+                      icon: const Icon(Icons.close_rounded,
+                          color: ThemeConfig.colorDanger)),
+                _uploadingFile
+                    ? PaddingWrapper(
+                        child: const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator()),
+                        right: 16)
+                    : IconButton(
+                        onPressed: pickFile,
+                        icon: const Icon(Icons.upload_rounded))
+              ])),
+          name: "${widget.name}_file_name",
+          initialValue: uploadedFileName,
+          readOnly: true,
+          validator: (val) {
+            if (widget.required && (val == null || val.trim().isEmpty)) {
+              return LocalizationService.translate
+                  .msg_field_required(widget.label);
+            }
+            return null;
+          }),
+      FieldGenerator.hiddenField(
+          key: fileIdFieldKey, name: widget.name, value: uploadedFileId)
     ]);
   }
 }
