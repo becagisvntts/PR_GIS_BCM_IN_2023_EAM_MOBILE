@@ -8,6 +8,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_w
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/screens/classes/card_insert_screen.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_in_grid_widget.dart';
@@ -117,8 +118,8 @@ class ClassGridScreenState extends State<ClassGridScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
             title: StoreConnector<AppState, String>(
-                converter: (store) => store.state.eamState.classState
-                    .activeClass[ClassConfig.classTitleByKey],
+                converter: (store) => ClassGetter.getDescription(
+                    store.state.eamState.classState.activeClass),
                 builder: (context, props) {
                   return Text(props);
                 })),

@@ -53,7 +53,7 @@ class EAMAppState extends State<EAMApp> {
         canvasColor: Colors.transparent,
         // colorSchemeSeed: ThemeConfig.appColor,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: ThemeConfig.appColor,
+            backgroundColor: ThemeConfig.appColorSecondary,
             foregroundColor: ThemeConfig.colorWhite),
         unselectedWidgetColor: ThemeConfig.appColor,
         // buttonTheme: ButtonThemeData(buttonColor: ThemeConfig.appColor),

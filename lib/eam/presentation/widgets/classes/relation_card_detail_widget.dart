@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/data_type_service.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_group_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/shimmers/card_group_shimmer.dart';
 
-class DomainCardDetailWidget extends StatefulWidget {
-  final Map<String, dynamic> card;
-  const DomainCardDetailWidget({super.key, required this.card});
+class RelationCardDetailWidget extends StatefulWidget {
+  final Map<String, dynamic> relationCard;
+  const RelationCardDetailWidget({super.key, required this.relationCard});
 
   @override
-  State<StatefulWidget> createState() => DomainCardDetailWidgetState();
+  State<StatefulWidget> createState() => RelationCardDetailWidgetState();
 }
 
-class DomainCardDetailWidgetState extends State<DomainCardDetailWidget> {
+class RelationCardDetailWidgetState extends State<RelationCardDetailWidget> {
   late List<Map<String, dynamic>> attributeGroupsConfig;
   late Map<String, dynamic> attributesByGroups;
 
@@ -38,13 +38,12 @@ class DomainCardDetailWidgetState extends State<DomainCardDetailWidget> {
   Future<void> fetchCardDetail() async {
     ///Get groups config
     Map<String, dynamic> classConfig =
-        ClassService.getClassConfigOfCard(widget.card);
-    attributeGroupsConfig = DataTypeService.listToListMapStringDynamic(
-        classConfig[ClassConfig.classAttributeGroupsByKey]);
+        ClassService.getClassConfigOfCard(widget.relationCard);
+    attributeGroupsConfig = ClassGetter.getAttributeGroups(classConfig);
 
     ///Get full card detail and attributes
     Map<String, dynamic> cardDetail =
-        await ClassService.fetchClassCardDetail(widget.card);
+        await ClassService.fetchClassCardDetail(widget.relationCard);
     attributesByGroups = {};
     for (Map<String, dynamic> attribute
         in DataTypeService.listToListMapStringDynamic(
@@ -80,10 +79,10 @@ class DomainCardDetailWidgetState extends State<DomainCardDetailWidget> {
             : ListView(shrinkWrap: true, children: [
                 for (Map<String, dynamic> groupConfig in attributeGroupsConfig)
                   CardGroupWidget(
-                      card: widget.card,
+                      card: widget.relationCard,
                       groupConfig: groupConfig,
                       attributesByGroup:
-                          getAttributesByGroups(groupConfig["name"])),
+                          getAttributesByGroups(groupConfig["name"]))
               ]));
   }
 }

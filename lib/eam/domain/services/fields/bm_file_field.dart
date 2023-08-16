@@ -11,8 +11,17 @@ class BMFileField extends StatefulWidget {
   final String name;
   final dynamic value;
   final String description;
+  final String dmsCategory;
+  final String fileName;
+  final int fileId;
   const BMFileField(
-      {super.key, required this.name, this.value, required this.description});
+      {super.key,
+      required this.name,
+      this.value,
+      required this.description,
+      required this.dmsCategory,
+      required this.fileName,
+      required this.fileId});
 
   @override
   State<StatefulWidget> createState() => BMFileFieldState();

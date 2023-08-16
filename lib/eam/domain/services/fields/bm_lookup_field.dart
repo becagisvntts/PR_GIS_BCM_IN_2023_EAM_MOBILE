@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/fields/field_generator.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/lookup_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/lookup_service.dart';
 
 class BMLookupField extends StatefulWidget {
@@ -34,7 +35,7 @@ class BMLookupFieldState extends State<BMLookupField> {
   bool loadingLookupCards = true;
   final lookupCodeFieldKey = GlobalKey<FormBuilderFieldState>();
   final lookupDescriptionFieldKey = GlobalKey<FormBuilderFieldState>();
-  final referenceDescriptionTranslationFieldKey =
+  final lookupDescriptionTranslationFieldKey =
       GlobalKey<FormBuilderFieldState>();
   late DataList lookupTypes;
 
@@ -50,16 +51,29 @@ class BMLookupFieldState extends State<BMLookupField> {
     setState(() {});
   }
 
-  dynamic getReferenceCode(dynamic referenceId) {
-    for (Map<String, dynamic> card in lookupTypes.data) {
-      if (card["_id"] == referenceId) return card["code"];
+  dynamic getLookupCode(dynamic lookupId) {
+    for (Map<String, dynamic> lookup in lookupTypes.data) {
+      if (LookupGetter.getID(lookup) == lookupId) {
+        return LookupGetter.getCode(lookup);
+      }
     }
     return "";
   }
 
-  dynamic getReferenceDescription(dynamic referenceId) {
-    for (Map<String, dynamic> card in lookupTypes.data) {
-      if (card["_id"] == referenceId) return card["description"];
+  dynamic getLookupDescription(dynamic lookupId) {
+    for (Map<String, dynamic> lookup in lookupTypes.data) {
+      if (LookupGetter.getID(lookup) == lookupId) {
+        return LookupGetter.getDescription(lookup);
+      }
+    }
+    return "";
+  }
+
+  dynamic getLookupDescriptionTranslation(dynamic lookupId) {
+    for (Map<String, dynamic> lookup in lookupTypes.data) {
+      if (LookupGetter.getID(lookup) == lookupId) {
+        return LookupGetter.getDescription(lookup);
+      }
     }
     return "";
   }
@@ -77,17 +91,18 @@ class BMLookupFieldState extends State<BMLookupField> {
                 enabled: widget.enabled,
                 dropdownItems: lookupTypes.data
                     .map((el) => DropdownMenuItem(
-                        value: el["_id"], child: Text(el["description"])))
+                        value: LookupGetter.getID(el),
+                        child: Text(LookupGetter.getCode(el))))
                     .toList(),
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
                       lookupCodeFieldKey.currentState!
-                          .setValue(getReferenceCode(value));
+                          .setValue(getLookupCode(value));
                       lookupDescriptionFieldKey.currentState!
-                          .setValue(getReferenceDescription(value));
-                      referenceDescriptionTranslationFieldKey.currentState!
-                          .setValue(getReferenceDescription(value));
+                          .setValue(getLookupDescription(value));
+                      lookupDescriptionTranslationFieldKey.currentState!
+                          .setValue(getLookupDescriptionTranslation(value));
                     });
                   }
                 }),
@@ -100,7 +115,7 @@ class BMLookupFieldState extends State<BMLookupField> {
                 name: "_${widget.name}_description",
                 value: widget.valueDescription),
             FieldGenerator.hiddenField(
-                key: referenceDescriptionTranslationFieldKey,
+                key: lookupDescriptionTranslationFieldKey,
                 name: "_${widget.name}_description_translation",
                 value: widget.valueDescriptionTranslation)
           ]);

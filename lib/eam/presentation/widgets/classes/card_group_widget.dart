@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card/card_content.dart';
 
 class CardGroupWidget extends StatefulWidget {
   final Map<String, dynamic> groupConfig;
@@ -59,14 +59,10 @@ class CardGroupWidgetState extends State<CardGroupWidget> {
                   child: Card(
                       elevation: 3,
                       child: PaddingWrapper(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (Map<String, dynamic> attributeConfig
-                                    in widget.attributesByGroup)
-                                  ClassService.getAttributeText(
-                                      attributeConfig, widget.card),
-                              ]),
+                          child: CardContent(
+                              displayedAttributes: widget.attributesByGroup,
+                              card: widget.card,
+                              isShowInList: false),
                           all: 16)),
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 12))

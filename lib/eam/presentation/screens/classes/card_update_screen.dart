@@ -14,6 +14,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.d
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/screens/classes/class_grid_screen.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_modifying_group_widget.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/domain_group_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/shimmers/card_group_shimmer.dart';
 
 class CardUpdateScreen extends StatefulWidget {
@@ -109,8 +110,6 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
       Map<String, dynamic> formData = {
         ...formUpdateCardKey.currentState!.value
       };
-      print(formData);
-      return;
 
       formData["_type"] = ClassGetter.getType(classConfig);
       formData["_tenant"] = "";
@@ -130,7 +129,9 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
       }
 
       var response = await ClassService.updateCard(
-          ClassGetter.getType(classConfig), CardGetter.getID(_card), formData);
+          ClassGetter.getType(classConfig),
+          "${CardGetter.getID(_card)}",
+          formData);
 
       if (response == false) {
         NotifyService.showErrorMessage(LocalizationService.translate
@@ -151,7 +152,7 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
             title: Text(
-                "${LocalizationService.translate.cm_update} ${CardGetter.getTitle(_card)}")),
+                "${LocalizationService.translate.cm_update} ${CardGetter.getDescription(_card)}")),
         body: PageContent(
             child: loadingConfig
                 ? const CardGroupShimmer()
@@ -166,7 +167,13 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
                                     card: _card,
                                     groupConfig: groupConfig,
                                     attributesByGroup: getAttributesByGroups(
-                                        groupConfig["name"]))
+                                        groupConfig["name"])),
+                              for (int i = 0; i < classDomains.data.length; i++)
+                                DomainGroupWidget(
+                                    domainAttributes: domainsAttributes[i],
+                                    domainConfig: classDomains.data[i],
+                                    sourceCard: _card,
+                                    isModifyingMode: true)
                             ]))),
                     PaddingWrapper(
                         child: Row(children: [
@@ -174,7 +181,8 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
                               child: PaddingWrapper(
                                   child: BaseButton(
                                       LocalizationService.translate.cm_save,
-                                      () => updateCard(isViewDetail: true),
+                                      onPressed: () =>
+                                          updateCard(isViewDetail: true),
                                       iconData: Icons.save_rounded),
                                   right: 4)),
                           Expanded(
@@ -182,7 +190,8 @@ class CardUpdateScreenState extends State<CardUpdateScreen> {
                                   child: BaseButton(
                                       LocalizationService
                                           .translate.cm_save_and_close,
-                                      () => updateCard(isViewDetail: false),
+                                      onPressed: () =>
+                                          updateCard(isViewDetail: false),
                                       iconData: Icons.save_rounded),
                                   left: 4))
                         ]),

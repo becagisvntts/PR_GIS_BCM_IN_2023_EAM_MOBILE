@@ -175,6 +175,7 @@ class LoginScreenState extends State<LoginScreen> {
                         ])),
                     PaddingWrapper(
                         child: FutureButton(
+                            color: ThemeConfig.appColor,
                             btnName: LocalizationService.translate.user_login,
                             onPressed: handleLogin,
                             iconData: Icons.login_rounded),

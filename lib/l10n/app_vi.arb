@@ -36,6 +36,7 @@
   "cm_browse_file": "Chọn",
   "cm_browse_file_from_gallery": "Thư viện",
   "cm_browse_file_from_camera": "Camera",
+  "cm_view_all": "Xem đầy đủ",
   "msg_no_internet": "Không có kết nối internet",
   "msg_delete_success": "Xóa {object} thành công",
   "msg_delete_fail": "Xóa {object} thất bại",
@@ -77,5 +78,8 @@
   "user_username": "Tên đăng nhập",
   "user_register": "Đăng ký tài khoản",
   "eam_list_count": "{value} các mục",
-  "card_delete_msg_confirm": "Bạn có chắc chắn xóa thẻ này? Các mối quan hệ cũng sẽ bị xóa."
+  "card_delete_msg_confirm": "Bạn có chắc chắn xóa thẻ này? Các mối quan hệ cũng sẽ bị xóa.",
+  "card_add_relate": "Thêm các mối quan hệ",
+  "card_relation_empty": "Chưa có mối quan hệ nào",
+  "card_relation_sub_type": "Loại phụ"
 }

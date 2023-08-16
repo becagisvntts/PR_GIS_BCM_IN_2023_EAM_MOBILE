@@ -5,6 +5,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_he
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/tree_node.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/actions/menu_action.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
@@ -20,7 +21,7 @@ class ButtonTreeNode extends StatefulWidget {
 }
 
 class ButtonTreeNodeState extends State<ButtonTreeNode> {
-  late String? activeClassName;
+  late String? activeClassType;
   late bool isFolder = false;
 
   @override
@@ -28,8 +29,8 @@ class ButtonTreeNodeState extends State<ButtonTreeNode> {
     isFolder = widget.node.menuType == ClassConfig.menuTypeFolder;
     Map<String, dynamic> activeClass =
         StateHelper.eamState.classState.activeClass;
-    activeClassName =
-        activeClass.isNotEmpty ? activeClass[ClassConfig.classTypeByKey] : "";
+    activeClassType =
+        activeClass.isNotEmpty ? ClassGetter.getType(activeClass) : "";
     super.initState();
   }
 
@@ -39,7 +40,7 @@ class ButtonTreeNodeState extends State<ButtonTreeNode> {
   }
 
   bool isOrContainActiveClass(TreeNode node) {
-    if (node.objectTypeName == activeClassName) {
+    if (node.objectTypeName == activeClassType) {
       return true;
     }
     for (TreeNode node in node.children) {
@@ -63,7 +64,7 @@ class ButtonTreeNodeState extends State<ButtonTreeNode> {
         child: Container(
             decoration: BoxDecoration(
                 color: isOrContainActiveClass(widget.node)
-                    ? ThemeConfig.appColorSecondaryLighting
+                    ? ThemeConfig.colorOrangeLighting
                     : ThemeConfig.colorWhite),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -79,7 +80,7 @@ class ButtonTreeNodeState extends State<ButtonTreeNode> {
                             size: 16,
                             color: isFolder
                                 ? ThemeConfig.appColor
-                                : ThemeConfig.appColorSecondary),
+                                : ThemeConfig.colorOrange),
                         right: 12),
                     Expanded(
                         child: Text(widget.node.objectDescription,

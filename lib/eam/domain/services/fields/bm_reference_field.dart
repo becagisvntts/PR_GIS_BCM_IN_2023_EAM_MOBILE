@@ -48,21 +48,25 @@ class BMReferenceFieldState extends State<BMReferenceField> {
     RequestPayload requestPayload =
         RequestPayload(limit: 500, attrs: ["Id", "Description", "Code"]);
     referenceCards = await ClassService.fetchClassCards(
-        className: widget.targetClass, requestPayload: requestPayload);
+        classType: widget.targetClass, requestPayload: requestPayload);
     loadingReferenceCards = false;
     setState(() {});
   }
 
   dynamic getReferenceCode(dynamic referenceId) {
     for (Map<String, dynamic> card in referenceCards.data) {
-      if (card["_id"] == referenceId) return card["Code"];
+      if (CardGetter.getID(card) == referenceId) {
+        return CardGetter.getCode(card);
+      }
     }
     return "";
   }
 
   dynamic getReferenceDescription(dynamic referenceId) {
     for (Map<String, dynamic> card in referenceCards.data) {
-      if (card["_id"] == referenceId) return card["Description"];
+      if (CardGetter.getID(card) == referenceId) {
+        return CardGetter.getDescription(card);
+      }
     }
     return "";
   }
@@ -81,7 +85,7 @@ class BMReferenceFieldState extends State<BMReferenceField> {
                 dropdownItems: referenceCards.data
                     .map((el) => DropdownMenuItem(
                         value: CardGetter.getID(el),
-                        child: Text(CardGetter.getTitle(el))))
+                        child: Text(CardGetter.getDescription(el))))
                     .toList(),
                 onChanged: (value) {
                   if (value != null) {

@@ -13,7 +13,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.d
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/screens/classes/card_update_screen.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_group_widget.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/domain_grid_widget.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/domain_group_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/shimmers/card_group_shimmer.dart';
 
 class CardDetailScreen extends StatefulWidget {
@@ -62,8 +62,7 @@ class CardDetailScreenState extends State<CardDetailScreen> {
         await ClassService.fetchClassCardDetail(_card);
 
     List<Map<String, dynamic>> classAttributes =
-        DataTypeService.listToListMapStringDynamic(
-            cardDetail["_model"]["attributes"]);
+        CardGetter.getAttributes(cardDetail);
 
     ///Update _card
     cardDetail.remove("_model");
@@ -118,7 +117,7 @@ class CardDetailScreenState extends State<CardDetailScreen> {
   void showConfirmDeleteDialog() {
     showCustomBottomActionSheet(
         title:
-            "${LocalizationService.translate.cm_delete} ${CardGetter.getTitle(_card)}",
+            "${LocalizationService.translate.cm_delete} ${CardGetter.getDescription(_card)}",
         message: LocalizationService.translate.card_delete_msg_confirm,
         actions: [
           CupertinoActionSheetAction(
@@ -133,7 +132,7 @@ class CardDetailScreenState extends State<CardDetailScreen> {
 
   void deleteCard() async {
     bool result = await ClassService.deleteCard(
-        CardGetter.getClassType(_card), CardGetter.getID(_card));
+        CardGetter.getClassType(_card), "${CardGetter.getID(_card)}");
     if (result) {
       NotifyService.showSuccessMessage(LocalizationService.translate
           .msg_action_success(LocalizationService.translate.cm_delete));
@@ -155,7 +154,7 @@ class CardDetailScreenState extends State<CardDetailScreen> {
                         ? ClassConfig.popRouteOnModifySuccess
                         : null),
                 icon: const Icon(Icons.arrow_back_rounded)),
-            title: Text(CardGetter.getTitle(_card)),
+            title: Text(CardGetter.getDescription(_card)),
             actions: [
               IconButton(
                   onPressed: navigateToCardUpdateScreen,
@@ -176,10 +175,10 @@ class CardDetailScreenState extends State<CardDetailScreen> {
                           attributesByGroup:
                               getAttributesByGroups(groupConfig["name"])),
                     for (int i = 0; i < classDomains.data.length; i++)
-                      DomainGridWidget(
+                      DomainGroupWidget(
                           domainAttributes: domainsAttributes[i],
                           domainConfig: classDomains.data[i],
-                          card: _card)
+                          sourceCard: _card)
                   ])));
   }
 }

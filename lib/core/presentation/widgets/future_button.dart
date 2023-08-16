@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 
 class FutureButton extends StatefulWidget {
   final String btnName;
   final Function onPressed;
-  final Color? color;
+  final Color color;
   final double? width;
   final double? height;
   final IconData? iconData;
@@ -13,7 +14,7 @@ class FutureButton extends StatefulWidget {
       {super.key,
       required this.btnName,
       required this.onPressed,
-      this.color,
+      this.color = ThemeConfig.appColorSecondary,
       this.height,
       this.width,
       this.iconData});
@@ -30,7 +31,7 @@ class _FutureButtonState extends State<FutureButton> {
       return ButtonLoading(
           color: widget.color, height: widget.height, width: widget.width);
     }
-    return BaseButton(widget.btnName, () async {
+    return BaseButton(widget.btnName, onPressed: () async {
       setState(() {
         _onProcessing = true;
       });

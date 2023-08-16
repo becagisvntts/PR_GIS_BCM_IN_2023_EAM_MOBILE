@@ -83,8 +83,6 @@ class CardInsertScreenState extends State<CardInsertScreen> {
       Map<String, dynamic> formData = {
         ...formInsertCardKey.currentState!.value
       };
-      print(formData);
-      return;
 
       formData["_type"] = ClassGetter.getType(classConfig);
       formData["_tenant"] = "";
@@ -125,7 +123,7 @@ class CardInsertScreenState extends State<CardInsertScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
             title: Text(
-                "${LocalizationService.translate.cm_create} ${classConfig[ClassConfig.classTypeByKey]}")),
+                "${LocalizationService.translate.cm_create} ${ClassGetter.getType(classConfig)}")),
         body: PageContent(
             child: loadingConfig
                 ? const CardGroupShimmer()
@@ -147,7 +145,8 @@ class CardInsertScreenState extends State<CardInsertScreen> {
                               child: PaddingWrapper(
                                   child: BaseButton(
                                       LocalizationService.translate.cm_save,
-                                      () => insertCard(isViewDetail: true),
+                                      onPressed: () =>
+                                          insertCard(isViewDetail: true),
                                       iconData: Icons.save_rounded),
                                   right: 4)),
                           Expanded(
@@ -155,7 +154,8 @@ class CardInsertScreenState extends State<CardInsertScreen> {
                                   child: BaseButton(
                                       LocalizationService
                                           .translate.cm_save_and_close,
-                                      () => insertCard(isViewDetail: false),
+                                      onPressed: () =>
+                                          insertCard(isViewDetail: false),
                                       iconData: Icons.save_rounded),
                                   left: 4))
                         ]),

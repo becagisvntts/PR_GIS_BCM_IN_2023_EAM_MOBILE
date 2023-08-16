@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attribute_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
 class ClassSortingWidget extends StatefulWidget {
@@ -35,11 +35,11 @@ class ClassSortingWidgetState extends State<ClassSortingWidget> {
     DataList classAttributes = StateHelper.eamState.classState.classAttributes;
     for (int i = 0; i < classAttributes.data.length; i++) {
       Map<String, dynamic> attribute = classAttributes.data[i];
-      if (attribute[ClassConfig.attributeShowInGridByKey] &&
-          attribute[ClassConfig.attributeSortingEnableByKey]) {
+      if (AttributeGetter.getShowInGrid(attribute) &&
+          AttributeGetter.getSortingEnabled(attribute)) {
         sortingAttributes.add(DropdownMenuItem(
-            value: attribute[ClassConfig.attributeNameByKey],
-            child: Text(attribute[ClassConfig.attributeTitleByKey])));
+            value: AttributeGetter.getName(attribute),
+            child: Text(AttributeGetter.getDescription(attribute))));
       }
     }
   }

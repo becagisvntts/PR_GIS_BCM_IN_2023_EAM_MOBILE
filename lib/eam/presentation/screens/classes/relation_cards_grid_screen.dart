@@ -5,32 +5,35 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/card_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/domain_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_in_grid_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/class_searching_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/class_sorting_widget.dart';
 
-class DomainGridScreen extends StatefulWidget {
+class RelationCardsGridScreen extends StatefulWidget {
   final DataList domainAttributes;
   final Map<String, dynamic> domainConfig;
-  final Map<String, dynamic> card;
+  final Map<String, dynamic> sourceCard;
 
-  const DomainGridScreen(
+  const RelationCardsGridScreen(
       {super.key,
       required this.domainAttributes,
       required this.domainConfig,
-      required this.card});
+      required this.sourceCard});
 
   @override
-  State<StatefulWidget> createState() => DomainGridScreenState();
+  State<StatefulWidget> createState() => RelationCardsGridScreenState();
 }
 
-class DomainGridScreenState extends State<DomainGridScreen> {
+class RelationCardsGridScreenState extends State<RelationCardsGridScreen> {
   late RequestPayload requestPayload;
   late bool isShowSearchingWidget = false;
   late bool isShowSortingWidget = false;
   late int totalCards = 0;
+
+  late bool isDomainHaveMultipleDestinationType = false;
 
   final PagingController<int, Map<String, dynamic>> pagingController =
       PagingController(firstPageKey: 1);
@@ -40,13 +43,14 @@ class DomainGridScreenState extends State<DomainGridScreen> {
     requestPayload = RequestPayload();
     pagingController
         .addPageRequestListener((pageKey) => fetchDomainCards(pageKey));
+    checkDomainHaveMultipleDestinationType();
     super.initState();
   }
 
   Future<void> fetchDomainCards(int pageKey) async {
     requestPayload = requestPayload.copyWith(page: pageKey);
-    DataList list = await ClassService.fetchDomainCards(
-        widget.domainConfig, widget.card,
+    DataList list = await ClassService.fetchRelationCards(
+        widget.domainConfig, widget.sourceCard,
         requestPayload: requestPayload);
     setState(() {
       totalCards = list.meta.total;
@@ -92,13 +96,18 @@ class DomainGridScreenState extends State<DomainGridScreen> {
     });
   }
 
+  void checkDomainHaveMultipleDestinationType() {
+    isDomainHaveMultipleDestinationType =
+        DomainGetter.haveMultipleDestinationTypes(widget.domainConfig);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
             title: Text(
-                "${widget.card[ClassConfig.cardTitleByKey]}: ${ClassService.getDomainTitleOnClassDetail(widget.domainConfig)}")),
+                "${CardGetter.getDescription(widget.sourceCard)}: ${DomainGetter.getRelatedDescription(widget.domainConfig)}")),
         body: PageContent(
             child: Column(children: [
           Column(children: [
@@ -148,7 +157,9 @@ class DomainGridScreenState extends State<DomainGridScreen> {
                         classAttributes: widget.domainAttributes,
                         card: item,
                         index: index,
-                        isDomainCard: true);
+                        isRelationCard: true,
+                        isShowRelationSubType:
+                            isDomainHaveMultipleDestinationType);
                   })))
         ])));
   }

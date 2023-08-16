@@ -184,16 +184,19 @@ Widget LoadingSpinner() {
 }
 
 ///BUTTONS
-FilledButton BaseButton(String btnName, Function onPressed,
-    {Color? color, double? width, double? height, IconData? iconData}) {
+FilledButton BaseButton(String btnName,
+    {required Function onPressed,
+    Color color = ThemeConfig.appColorSecondary,
+    double? width,
+    double? height,
+    IconData? iconData}) {
   return FilledButton(
       onPressed: () => onPressed(),
       style: ElevatedButton.styleFrom(
           elevation: 3,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           backgroundColor: color,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           minimumSize: Size(width ?? double.infinity, height ?? 45),
           maximumSize: Size(width ?? double.infinity, height ?? 45)),
       child: FittedBox(
@@ -206,6 +209,32 @@ FilledButton BaseButton(String btnName, Function onPressed,
           ])));
 }
 
+OutlinedButton OutlineButton(String btnName,
+    {Color color = ThemeConfig.appColorSecondary,
+    required Function onPressed,
+    double? width,
+    double? height,
+    IconData? iconData}) {
+  return OutlinedButton(
+      onPressed: () => onPressed(),
+      style: ElevatedButton.styleFrom(
+          elevation: 3,
+          foregroundColor: color,
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          side: BorderSide(color: color, width: 1, style: BorderStyle.solid),
+          minimumSize: Size(width ?? double.infinity, height ?? 45),
+          maximumSize: Size(width ?? double.infinity, height ?? 45)),
+      child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(btnName.toUpperCase(), style: TextStyle(color: color)),
+            if (iconData != null)
+              PaddingWrapper(
+                  child: Icon(iconData, color: color, size: 20), left: 4)
+          ])));
+}
+
 FilledButton ButtonDisabled(String btnName,
     {Color? color, double? width, double? height, IconData? iconData}) {
   return FilledButton(
@@ -214,8 +243,7 @@ FilledButton ButtonDisabled(String btnName,
           elevation: 3,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           backgroundColor: color?.withAlpha(50),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           minimumSize: Size(width ?? double.infinity, height ?? 45)),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(btnName.toUpperCase(), textAlign: TextAlign.center),
@@ -232,15 +260,15 @@ FilledButton ButtonLoading({Color? color, double? width, double? height}) {
           elevation: 3,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           backgroundColor: color,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           minimumSize: Size(width ?? double.infinity, height ?? 45)),
       child: const CupertinoActivityIndicator(color: Colors.white));
 }
 
 FilledButton ButtonPrimary(String btnName, Function onPressed,
     {IconData? iconData, double? width, double? height}) {
-  return BaseButton(btnName, onPressed,
+  return BaseButton(btnName,
+      onPressed: onPressed,
       color: ThemeConfig.colorPrimary,
       iconData: iconData,
       width: width,
@@ -249,7 +277,8 @@ FilledButton ButtonPrimary(String btnName, Function onPressed,
 
 FilledButton ButtonSuccess(String btnName, Function onPressed,
     {IconData? iconData, double? width, double? height}) {
-  return BaseButton(btnName, onPressed,
+  return BaseButton(btnName,
+      onPressed: onPressed,
       color: ThemeConfig.colorSuccess,
       iconData: iconData,
       width: width,
@@ -258,13 +287,18 @@ FilledButton ButtonSuccess(String btnName, Function onPressed,
 
 FilledButton ButtonTeal(String btnName, Function onPressed,
     {IconData? iconData, double? width, double? height}) {
-  return BaseButton(btnName, onPressed,
-      color: Colors.teal, iconData: iconData, width: width, height: height);
+  return BaseButton(btnName,
+      onPressed: onPressed,
+      color: Colors.teal,
+      iconData: iconData,
+      width: width,
+      height: height);
 }
 
 FilledButton ButtonDanger(String btnName, Function onPressed,
     {IconData? iconData, double? width, double? height}) {
-  return BaseButton(btnName, onPressed,
+  return BaseButton(btnName,
+      onPressed: onPressed,
       color: ThemeConfig.colorDanger,
       iconData: iconData,
       width: width,
@@ -273,7 +307,8 @@ FilledButton ButtonDanger(String btnName, Function onPressed,
 
 FilledButton ButtonWarning(String btnName, Function onPressed,
     {IconData? iconData, double? width, double? height}) {
-  return BaseButton(btnName, onPressed,
+  return BaseButton(btnName,
+      onPressed: onPressed,
       color: Colors.orangeAccent,
       iconData: iconData,
       width: width,

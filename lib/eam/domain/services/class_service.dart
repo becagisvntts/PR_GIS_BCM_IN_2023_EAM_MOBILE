@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/http_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list_meta.dart';
@@ -9,7 +10,8 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/card_getter.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/domain_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/actions/class_action.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/store/class_state.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
@@ -47,7 +49,7 @@ class ClassService {
     DataList classDomains = StateHelper.eamState.classState.classDomains;
     Map<String, dynamic> activeClass =
         StateHelper.eamState.classState.activeClass;
-    if (className != activeClass[ClassConfig.classTypeByKey] ||
+    if (className != ClassGetter.getType(activeClass) ||
         classDomains.data.isEmpty) {
       String api = "$classApi$className/domains?detailed=true";
       var response = await HttpService.getWithAuth(endpoint: api);
@@ -87,7 +89,7 @@ class ClassService {
       List<Future<DataList>> requestList = [];
       for (Map<String, dynamic> domain in domains.data) {
         requestList.add(ClassService.fetchClassAttributes(
-            ClassService.getDomainTargetNameOnClassDetail(domain)));
+            DomainGetter.getRelatedTargetClass(domain)));
       }
 
       domainsAttributes = await Future.wait(requestList);
@@ -109,8 +111,8 @@ class ClassService {
 
   static Future<Map<String, dynamic>> fetchClassCardDetail(
       Map<String, dynamic> card) async {
-    String cardClassType = card[ClassConfig.cardClassTypeByKey];
-    String cardId = CardGetter.getID(card);
+    String cardClassType = CardGetter.getClassType(card);
+    String cardId = "${CardGetter.getID(card)}";
     String api =
         "$classApi$cardClassType/cards/$cardId?includeModel=true&includeWidgets=true&includeStats=true";
     var response = await HttpService.getWithAuth(endpoint: api);
@@ -127,21 +129,21 @@ class ClassService {
     };
   }
 
-  static Future<DataList> fetchDomainCards(
+  static Future<DataList> fetchRelationCards(
       Map<String, dynamic> domainConfig, Map<String, dynamic> card,
       {RequestPayload? requestPayload}) async {
     Map<String, dynamic> additionalFilter = {
       "relation": [
         {
-          "domain": domainConfig["_id"],
-          "source": domainConfig["source"],
-          "destination": domainConfig["destination"],
-          "direction": getDomainDirectionOnClassDetail(domainConfig),
+          "domain": DomainGetter.getName(domainConfig),
+          "source": DomainGetter.getSource(domainConfig),
+          "destination": DomainGetter.getDestination(domainConfig),
+          "direction": DomainGetter.getDirectionAsNumber(domainConfig),
           "type": "oneof",
           "cards": [
             {
-              "className": card[ClassConfig.cardClassTypeByKey],
-              "id": CardGetter.getID(card)
+              "className": CardGetter.getClassType(card),
+              "id": "${CardGetter.getID(card)}"
             }
           ]
         }
@@ -157,28 +159,40 @@ class ClassService {
     }
 
     String api =
-        "$classApi${getDomainTargetNameOnClassDetail(domainConfig)}/cards?$payloadStr}";
+        "$classApi${DomainGetter.getRelatedTargetClass(domainConfig)}/cards?$payloadStr}";
     var response = await HttpService.getWithAuth(endpoint: api);
 
     if (response.statusCode == 200) {
       dynamic resArr = jsonDecode(utf8.decode(response.bodyBytes));
-      DataList classCards = DataList.fromJson(resArr);
-      updateClassCardsToStore(classCards);
-      return classCards;
+      return DataList.fromJson(resArr);
+    }
+
+    return DataList();
+  }
+
+  static Future<DataList> fetchDomainCards(Map<String, dynamic> domainConfig,
+      Map<String, dynamic> card, RequestPayload requestPayload) async {
+    String api =
+        "$classApi${DomainGetter.getRelatedTargetClass(domainConfig)}/cards?${requestPayload.toPath()}";
+    var response = await HttpService.getWithAuth(endpoint: api);
+
+    if (response.statusCode == 200) {
+      dynamic resArr = jsonDecode(utf8.decode(response.bodyBytes));
+      return DataList.fromJson(resArr);
     }
 
     return DataList();
   }
 
   static Future<DataList> fetchClassCards(
-      {String? className, RequestPayload? requestPayload}) async {
-    className = className ??
-        StateHelper.eamState.classState.activeClass[ClassConfig.classTypeByKey];
+      {String? classType, RequestPayload? requestPayload}) async {
+    classType = classType ??
+        ClassGetter.getType(StateHelper.eamState.classState.activeClass);
     requestPayload =
         requestPayload ?? StateHelper.eamState.classState.requestPayload;
 
     var response = await HttpService.getWithAuth(
-        endpoint: "$classApi$className/cards?${requestPayload.toPath()}");
+        endpoint: "$classApi$classType/cards?${requestPayload.toPath()}");
 
     if (response.statusCode == 200) {
       dynamic resArr = jsonDecode(utf8.decode(response.bodyBytes));
@@ -207,10 +221,10 @@ class ClassService {
     StateHelper.store.dispatch(FetchClassCardsSuccessAction(list: newList));
   }
 
-  static void findAndChangeActiveClass(String className) async {
+  static void findAndChangeActiveClass(String classType) async {
     DataList classes = StateHelper.eamState.classState.list;
     for (int i = 0; i < classes.meta.total; i++) {
-      if (classes.data[i][ClassConfig.classTypeByKey] == className) {
+      if (ClassGetter.getType(classes.data[i]) == classType) {
         StateHelper.store
             .dispatch(UpdateActiveClass(activeClass: classes.data[i]));
         break;
@@ -228,42 +242,16 @@ class ClassService {
             domainConfig["destinations"].contains(className));
   }
 
-  static String getDomainTitleOnClassDetail(Map<String, dynamic> domainConfig) {
-    return domainConfig["sourceInline"]
-        ? domainConfig["descriptionDirect"]
-        : domainConfig["descriptionInverse"];
-  }
-
-  static String getDomainTargetNameOnClassDetail(
-      Map<String, dynamic> domainConfig) {
-    return domainConfig["sourceInline"]
-        ? domainConfig["destination"]
-        : domainConfig["source"];
-  }
-
-  static bool getDomainDefaultClosedOnClassDetail(
-      Map<String, dynamic> domainConfig) {
-    return domainConfig["sourceInline"]
-        ? domainConfig["sourceDefaultClosed"]
-        : domainConfig["destinationDefaultClosed"];
-  }
-
-  static String getDomainDirectionOnClassDetail(
-      Map<String, dynamic> domainConfig) {
-    return domainConfig["sourceInline"] ? "_2" : "_1";
-  }
-
   static Map<String, dynamic> getClassConfigOfCard(Map<String, dynamic>? card) {
     Map<String, dynamic> activeClass =
         StateHelper.eamState.classState.activeClass;
     if (card == null) return activeClass;
 
-    if (card[ClassConfig.cardClassTypeByKey] !=
-        activeClass[ClassConfig.classTypeByKey]) {
+    if (CardGetter.getClassType(card) != ClassGetter.getType(activeClass)) {
       DataList classes = StateHelper.eamState.classState.list;
       for (int i = 0; i < classes.data.length; i++) {
-        if (card[ClassConfig.cardClassTypeByKey] ==
-            classes.data[i][ClassConfig.classTypeByKey]) {
+        if (CardGetter.getClassType(card) ==
+            ClassGetter.getType(classes.data[i])) {
           return classes.data[i];
         }
       }
@@ -328,5 +316,32 @@ class ClassService {
     var response = await HttpService.deleteWithAuth(endpoint: api);
 
     return response.statusCode == 200;
+  }
+
+  static Future<bool> linkCardWithRelate(
+      Map<String, dynamic> domainConfig,
+      Map<String, dynamic> sourceCard,
+      Map<String, dynamic> destinationCard) async {
+    Map<String, dynamic> payload = {
+      "_type": DomainGetter.getName(domainConfig),
+      "_destinationId": CardGetter.getID(destinationCard),
+      "_destinationType": CardGetter.getClassType(destinationCard),
+      "_sourceType": CardGetter.getClassType(sourceCard),
+      "_sourceId": CardGetter.getID(sourceCard),
+      "_is_direct": DomainGetter.getDirectionAsString(domainConfig) ==
+          DomainGetter.directionDirect,
+      "_destinationDescription": "",
+      "_destinationCode": ""
+    };
+    String api =
+        "$classApi${CardGetter.getClassType(sourceCard)}/cards/${CardGetter.getID(sourceCard)}/relations";
+
+    var response = await HttpService.postWithAuth(endpoint: api, body: payload);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      NotifyService.showErrorMessage("Error!");
+      return false;
+    }
   }
 }
