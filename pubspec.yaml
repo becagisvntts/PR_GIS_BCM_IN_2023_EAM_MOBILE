@@ -52,6 +52,9 @@ dependencies:
   permission_handler: ^10.2.0
   form_builder_file_picker: ^4.0.0
   convert: ^3.1.1
+  gallery_saver: ^2.3.2
+  webview_flutter: ^4.2.2
+  dio: ^5.3.2
 
 dev_dependencies:
   flutter_test:

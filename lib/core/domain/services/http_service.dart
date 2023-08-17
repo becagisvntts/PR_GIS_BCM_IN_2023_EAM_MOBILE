@@ -9,6 +9,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/screens/login_screen.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 
 class HttpService {
   static const apiUrl =
@@ -152,17 +153,42 @@ class HttpService {
     }
   }
 
+  static Future<Map<String, String>> getAuthorizationHeader() async {
+    String? sessionId = await AuthService.getSessionId();
+    return getHeaders(sessionId);
+  }
+
+  static OverlayEntry? _overlayEntry;
   static void disabledInteractionOnRequesting() {
-    showDialog(
-        context: NavigationHelper.navigatorKey.currentContext!,
-        builder: (BuildContext context) => Dialog.fullscreen(
-            backgroundColor: ThemeConfig.colorBlackSecondary.withAlpha(10),
-            child: const Center(
-              child: Text("Please wait..."),
-            )));
+    _overlayEntry = OverlayEntry(builder: (BuildContext context) {
+      return GestureDetector(
+          onTap: () {},
+          child: Container(
+              color: const Color.fromRGBO(255, 255, 255, 0.4),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: CircularProgressIndicator(
+                            color: ThemeConfig.appColor)),
+                    PaddingWrapper(
+                        child: Text(LocalizationService.translate.cm_requesting,
+                            style: const TextStyle(
+                                color: ThemeConfig.appColor,
+                                fontSize: ThemeConfig.fontSizeSm,
+                                decoration: TextDecoration.none)),
+                        top: 16)
+                  ])));
+    });
+    Overlay.of(NavigationHelper.navigatorKey.currentContext!)
+        .insert(_overlayEntry!);
   }
 
   static void closeOverlayLayerBlocking() {
-    NavigationHelper.pop();
+    _overlayEntry?.remove();
   }
 }

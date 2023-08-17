@@ -28,10 +28,10 @@ class _FutureButtonState extends State<FutureButton> {
   bool _onProcessing = false;
   @override
   Widget build(BuildContext context) {
-    if (_onProcessing) {
-      return ButtonLoading(
-          color: widget.color, height: widget.height, width: widget.width);
-    }
+    // if (_onProcessing) {
+    //   return ButtonLoading(
+    //       color: widget.color, height: widget.height, width: widget.width);
+    // }
     return BaseButton(widget.btnName, onPressed: () async {
       setState(() {
         _onProcessing = true;
@@ -41,9 +41,6 @@ class _FutureButtonState extends State<FutureButton> {
         await widget.onPressed();
       } catch (e) {
         rethrow;
-        setState(() {
-          _onProcessing = false;
-        });
       }
 
       HttpService.closeOverlayLayerBlocking();

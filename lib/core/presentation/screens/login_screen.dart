@@ -8,7 +8,6 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/auth_service.
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
-import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/screens/register_screen.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/auth_header_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/future_button.dart';
@@ -184,8 +183,8 @@ class LoginScreenState extends State<LoginScreen> {
                   ])),
               FormControl(
                   child: TextButton(
-                      onPressed: () => NavigationHelper.pushReplacement(
-                          const RegisterScreen()),
+                      onPressed:
+                          () {}, //=> NavigationHelper.pushReplacement(const RegisterScreen()),
                       child: Text(
                           LocalizationService.translate.user_have_not_account,
                           style: const TextStyle(fontWeight: FontWeight.bold))))

@@ -5,6 +5,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/future_button.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/request_payload.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/card_getter.dart';
@@ -193,8 +194,11 @@ class RelationPickingScreenState extends State<RelationPickingScreen> {
                   }))),
           PaddingWrapper(
               child: Row(mainAxisSize: MainAxisSize.max, children: [
-                Expanded(child: Text("${selectedCards.length} đã chọn")),
-                BaseButton(LocalizationService.translate.cm_save,
+                Expanded(
+                    child: Text(LocalizationService.translate
+                        .card_relation_selected(selectedCards.length))),
+                FutureButton(
+                    btnName: LocalizationService.translate.cm_save,
                     onPressed: linkSourceCardWithSelectedCards,
                     width: 125,
                     iconData: Icons.save_rounded)

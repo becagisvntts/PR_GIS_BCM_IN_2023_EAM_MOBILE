@@ -50,8 +50,8 @@ class BMFileFieldState extends State<BMFileField> {
   void pickFile() async {
     PermissionStatus permissionStatus = await Permission.storage.request();
     if (permissionStatus == PermissionStatus.granted) {
-      FilePickerResult? result =
-          await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: widget.dmsCategory == "Photo" ? FileType.media : FileType.any);
 
       if (result != null) {
         setState(() {

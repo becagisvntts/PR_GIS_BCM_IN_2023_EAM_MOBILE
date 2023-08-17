@@ -6,9 +6,7 @@
   "cm_setting": "Settings",
   "cm_save": "Save",
   "cm_save_and_close": "Save and close",
-  "cm_save_image": "Save image",
-  "cm_save_video": "Save video",
-  "cm_save_audio": "Save sound",
+  "cm_download_file": "Download file",
   "cm_save_and_continue": "Save and continue",
   "cm_continue": "Continue",
   "cm_confirm": "Confirm",
@@ -37,6 +35,8 @@
   "cm_browse_file_from_gallery": "Library",
   "cm_browse_file_from_camera": "Camera",
   "cm_view_all": "View all",
+  "cm_loading": "Loading...",
+  "cm_requesting": "Please wait...",
   "msg_no_internet": "No internet",
   "msg_delete_success": "Delete {object} successfully",
   "msg_delete_fail": "Delete {object} failed",
@@ -78,8 +78,10 @@
   "user_username": "Username",
   "user_register": "Register account",
   "eam_list_count": "{value} cards",
+  "eam_loading_classes": "Initializing...",
   "card_delete_msg_confirm": "Are you sure to delete this card? Related data also will be delete.",
   "card_add_relate": "Add relationship",
   "card_relation_empty": "Relation list is empty",
-  "card_relation_sub_type": "Sub type"
+  "card_relation_sub_type": "Sub type",
+  "card_relation_selected": "{counter} selected"
 }

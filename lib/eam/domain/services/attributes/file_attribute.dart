@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/attributes/attributes_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/card_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/fields/bm_file_field.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/fields/bm_file_viewer.dart';
 
 class FileAttribute extends ClassAttribute {
   String dmsCategory = "";
   String dmsModel = "";
   String fileName = "";
+  String classType = "";
+  int cardId = -1;
 
   @override
   void initProperties() {
@@ -16,6 +20,21 @@ class FileAttribute extends ClassAttribute {
   @override
   String getValueAsString() {
     return fileName;
+  }
+
+  @override
+  Widget getValueAsWidget() {
+    return Row(children: [
+      Text("$description: ", style: const TextStyle(color: Colors.black54)),
+      BMFileViewer(
+          name: name,
+          label: description,
+          dmsCategory: dmsCategory,
+          fileName: fileName,
+          value: value,
+          classType: classType,
+          cardId: cardId)
+    ]);
   }
 
   @override
@@ -37,6 +56,9 @@ class FileAttribute extends ClassAttribute {
     if (card.containsKey("_${dmsCategory}_FileName")) {
       fileName = card["_${dmsCategory}_FileName"];
     }
+
+    classType = CardGetter.getClassType(card);
+    cardId = CardGetter.getID(card);
   }
 
   @override

@@ -44,6 +44,8 @@ class CardContentState extends State<CardContent> {
             attributeConfig);
     attribute.syncDataFromCard(widget.card);
 
+    return attribute.getValueAsWidget();
+
     return formattedAttributeText(
         attribute.description, attribute.getValueAsString());
   }

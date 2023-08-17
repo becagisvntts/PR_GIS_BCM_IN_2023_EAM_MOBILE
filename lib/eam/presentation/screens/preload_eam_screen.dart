@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/data_list.dart';
@@ -44,7 +45,9 @@ class PreloadEamScreenState extends State<PreloadEamScreen> {
                 children: [
           const SizedBox(
               width: 40, height: 40, child: CircularProgressIndicator()),
-          PaddingWrapper(child: const Text("Loading"), top: 16)
+          PaddingWrapper(
+              child: Text(LocalizationService.translate.eam_loading_classes),
+              top: 16)
         ])));
   }
 }

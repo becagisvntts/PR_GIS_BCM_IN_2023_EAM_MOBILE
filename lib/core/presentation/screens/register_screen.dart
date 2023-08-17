@@ -47,7 +47,6 @@ class RegisterScreenState extends State<RegisterScreen> {
       loginFormKey.currentState!.save();
       Map<String, dynamic> formData = loginFormKey.currentState!.value;
       dynamic response = await AuthService.login(formData);
-      print(response);
       if (response == true) {
         NavigationHelper.pushReplacement(const PreloadEamScreen());
       } else {

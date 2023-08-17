@@ -22,7 +22,13 @@ abstract class ClassAttribute {
   }
 
   Widget getValueAsWidget() {
-    return Text(getValueAsString());
+    return Text.rich(TextSpan(//apply style to all
+        children: [
+      TextSpan(
+          text: "$description: ",
+          style: const TextStyle(color: Colors.black54)),
+      TextSpan(text: getValueAsString())
+    ]));
   }
 
   void syncDataFromCard(Map<String, dynamic> card) {

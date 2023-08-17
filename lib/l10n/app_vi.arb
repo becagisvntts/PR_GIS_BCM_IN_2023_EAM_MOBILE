@@ -6,9 +6,7 @@
   "cm_setting": "Cài đặt",
   "cm_save": "Lưu",
   "cm_save_and_close": "Lưu và đóng",
-  "cm_save_image": "Lưu hình ảnh",
-  "cm_save_video": "Lưu video",
-  "cm_save_audio": "Lưu âm thanh",
+  "cm_download_file": "Tải file",
   "cm_save_and_continue": "Lưu và tiếp",
   "cm_continue": "Tiếp tục",
   "cm_confirm": "Xác nhận",
@@ -37,6 +35,8 @@
   "cm_browse_file_from_gallery": "Thư viện",
   "cm_browse_file_from_camera": "Camera",
   "cm_view_all": "Xem đầy đủ",
+  "cm_loading": "Đang tải...",
+  "cm_requesting": "Vui lòng chờ...",
   "msg_no_internet": "Không có kết nối internet",
   "msg_delete_success": "Xóa {object} thành công",
   "msg_delete_fail": "Xóa {object} thất bại",
@@ -78,8 +78,10 @@
   "user_username": "Tên đăng nhập",
   "user_register": "Đăng ký tài khoản",
   "eam_list_count": "{value} các mục",
+  "eam_loading_classes": "Đang khởi tạo...",
   "card_delete_msg_confirm": "Bạn có chắc chắn xóa thẻ này? Các mối quan hệ cũng sẽ bị xóa.",
   "card_add_relate": "Thêm các mối quan hệ",
   "card_relation_empty": "Chưa có mối quan hệ nào",
-  "card_relation_sub_type": "Loại phụ"
+  "card_relation_sub_type": "Loại phụ",
+  "card_relation_selected": "{counter} đã chọn"
 }
