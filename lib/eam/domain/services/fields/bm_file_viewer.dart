@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/date_time_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/file_helper.dart';
@@ -9,6 +9,7 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/notify_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class BMFileViewer extends StatefulWidget {
@@ -71,33 +72,54 @@ class BMFileViewerState extends State<BMFileViewer> {
   }
 
   void downloadFile(Map<String, String> requestHeaders) async {
-    var encodeFileName = Uri.encodeComponent(widget.fileName);
-    String fileUrl =
-        "${HttpService.apiUrl}classes/${widget.classType}/cards/${widget.cardId}/attachments/${widget.value}/$encodeFileName";
+    PermissionStatus permissionStatus = await Permission.storage.request();
+    if (permissionStatus == PermissionStatus.granted) {
+      var encodeFileName = Uri.encodeComponent(widget.fileName);
+      String fileUrl =
+          "${HttpService.apiUrl}classes/${widget.classType}/cards/${widget.cardId}/attachments/${widget.value}/$encodeFileName";
 
-    bool? savingStatus;
-    if (widget.dmsCategory == "Photo") {
-      savingStatus =
-          await GallerySaver.saveImage(fileUrl, headers: requestHeaders);
-    } else {
-      String folderPath = await FileHelper.getDownloadedFolderPath();
+      bool? savingStatus;
+      String folderPath = await FileHelper.getApplicationPath();
+      String filePath =
+          "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-$encodeFileName";
+
       try {
-        var response = await Dio().download(fileUrl,
-            "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-${widget.fileName}",
+        HttpService.disabledInteractionOnRequesting();
+
+        var response = await Dio().download(fileUrl, filePath,
             options: Options(headers: requestHeaders));
+        Share.shareXFiles([XFile(filePath)]);
         savingStatus = response.statusCode == 200;
       } catch (e) {
         print(e);
         savingStatus = false;
       }
-    }
 
-    if (savingStatus! == true) {
-      NotifyService.showSuccessMessage(LocalizationService.translate
-          .msg_action_success(LocalizationService.translate.cm_download_file));
-    } else {
-      NotifyService.showErrorMessage(LocalizationService.translate
-          .msg_action_fail(LocalizationService.translate.cm_download_file));
+      HttpService.closeOverlayLayerBlocking();
+      // if (widget.dmsCategory == "Photo") {
+      //   savingStatus =
+      //       await GallerySaver.saveImage(fileUrl, headers: requestHeaders);
+      // } else {
+      //   String folderPath = await FileHelper.getDownloadedFolderPath();
+      //   try {
+      //     var response = await Dio().download(fileUrl,
+      //         "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-${widget.fileName}",
+      //         options: Options(headers: requestHeaders));
+      //     savingStatus = response.statusCode == 200;
+      //   } catch (e) {
+      //     savingStatus = false;
+      //   }
+      // }
+
+      if (!savingStatus) {
+        NotifyService.showErrorMessage(LocalizationService.translate
+            .msg_action_fail(LocalizationService.translate.cm_download_file));
+      }
+      // else {
+      //   NotifyService.showSuccessMessage(LocalizationService.translate
+      //       .msg_action_success(
+      //       LocalizationService.translate.cm_download_file));
+      // }
     }
   }
 
