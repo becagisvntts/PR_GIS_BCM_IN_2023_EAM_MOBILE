@@ -10,11 +10,22 @@ class CardGetter {
   static const String codeByKey = "Code";
 
   static int getID(Map<String, dynamic> card) {
-    return card[idByKey];
+    if (card.containsKey("_id")) return card["_id"];
+    if (card.containsKey("Id")) return card["Id"] as int;
+    return 0;
   }
 
   static String getClassType(Map<String, dynamic> card) {
-    return card[classTypeByKey];
+    if (card.containsKey("_type")) return card["_type"];
+    if (card.containsKey("IdClass")) {
+      String idClass = card["IdClass"];
+      if (idClass.startsWith("public.")) {
+        List<String> arr = idClass.split(".");
+        return arr.last.replaceAll("\"", "");
+      }
+      return idClass;
+    }
+    return "";
   }
 
   static String getDescription(Map<String, dynamic> card) {

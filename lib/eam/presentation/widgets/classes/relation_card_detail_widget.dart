@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/data_type_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/card_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_getter.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/classes/card_group_widget.dart';
@@ -42,8 +43,9 @@ class RelationCardDetailWidgetState extends State<RelationCardDetailWidget> {
     attributeGroupsConfig = ClassGetter.getAttributeGroups(classConfig);
 
     ///Get full card detail and attributes
-    Map<String, dynamic> cardDetail =
-        await ClassService.fetchClassCardDetail(widget.relationCard);
+    Map<String, dynamic> cardDetail = await ClassService.fetchClassCardDetail(
+        CardGetter.getClassTypeName(widget.relationCard),
+        "${CardGetter.getID(widget.relationCard)}");
     attributesByGroups = {};
     for (Map<String, dynamic> attribute
         in DataTypeService.listToListMapStringDynamic(

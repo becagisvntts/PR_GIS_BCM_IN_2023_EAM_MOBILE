@@ -58,8 +58,8 @@ class CardDetailScreenState extends State<CardDetailScreen> {
     attributeGroupsConfig = ClassGetter.getAttributeGroups(classConfig);
 
     ///Get full card detail and attributes
-    Map<String, dynamic> cardDetail =
-        await ClassService.fetchClassCardDetail(_card);
+    Map<String, dynamic> cardDetail = await ClassService.fetchClassCardDetail(
+        CardGetter.getClassType(_card), "${CardGetter.getID(_card)}");
 
     List<Map<String, dynamic>> classAttributes =
         CardGetter.getAttributes(cardDetail);

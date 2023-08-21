@@ -110,11 +110,9 @@ class ClassService {
   }
 
   static Future<Map<String, dynamic>> fetchClassCardDetail(
-      Map<String, dynamic> card) async {
-    String cardClassType = CardGetter.getClassType(card);
-    String cardId = "${CardGetter.getID(card)}";
+      String classType, String cardId) async {
     String api =
-        "$classApi$cardClassType/cards/$cardId?includeModel=true&includeWidgets=true&includeStats=true";
+        "$classApi$classType/cards/$cardId?includeModel=true&includeWidgets=true&includeStats=true";
     var response = await HttpService.getWithAuth(endpoint: api);
 
     if (response.statusCode == 200) {
@@ -123,10 +121,12 @@ class ClassService {
       return resArr["data"];
     }
 
-    return {
-      ...card,
-      "_model": {"attributes": []}
-    };
+    return {};
+
+    // return {
+    //   ...card,
+    //   "_model": {"attributes": []}
+    // };
   }
 
   static Future<DataList> fetchRelationCards(

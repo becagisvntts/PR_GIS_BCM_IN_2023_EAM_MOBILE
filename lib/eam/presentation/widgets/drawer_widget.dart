@@ -4,9 +4,11 @@ import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.da
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/models/app_info.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/auth_service.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/navigation_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/presentation/widgets/common_widget.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/models/tree_node.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/domain/services/class_config.dart';
+import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/screens/map_screen.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/eam/presentation/widgets/btn_tree_node.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/store/state_manager.dart';
 
@@ -109,6 +111,10 @@ class DrawerWidgetState extends State<DrawerWidget>
                 ))
               ])),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Divider(),
+                ButtonDrawer(LocalizationService.translate.eam_map,
+                    () => NavigationHelper.push(const MapScreen()),
+                    iconData: Icons.map_rounded),
                 const Divider(),
                 ButtonDrawer(LocalizationService.translate.user_logout,
                     () => AuthService.logout(),

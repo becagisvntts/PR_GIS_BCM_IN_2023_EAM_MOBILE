@@ -349,6 +349,8 @@ void showCustomBottomSheet(
     required Widget child}) {
   showModalBottomSheet(
       context: NavigationHelper.navigatorKey.currentContext!,
+      isDismissible: false,
+      enableDrag: false,
       builder: (BuildContext context) {
         return SingleChildScrollView(
             child: Column(

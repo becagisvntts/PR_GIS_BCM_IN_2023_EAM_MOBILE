@@ -79,9 +79,21 @@
   "user_register": "Đăng ký tài khoản",
   "eam_list_count": "{value} các mục",
   "eam_loading_classes": "Đang khởi tạo...",
+  "eam_map": "Bản đồ",
+  "eam_grid": "Danh sách",
   "card_delete_msg_confirm": "Bạn có chắc chắn xóa thẻ này? Các mối quan hệ cũng sẽ bị xóa.",
   "card_add_relate": "Thêm các mối quan hệ",
   "card_relation_empty": "Chưa có mối quan hệ nào",
   "card_relation_sub_type": "Loại phụ",
-  "card_relation_selected": "{counter} đã chọn"
+  "card_relation_selected": "{counter} đã chọn",
+  "map_view_on_map": "Xem trên bản đồ",
+  "map_point": "Điểm",
+  "map_line": "Đường",
+  "map_polygon": "Vùng",
+  "map_lat": "Vĩ độ",
+  "map_lng": "Kinh độ",
+  "map_cannot_determine_user_locate": "Không thể xác định vị trí người dùng",
+  "map_select_base_layers": "Chọn lớp bản đồ nền",
+  "map_view_card_detail": "Xem chi tiết",
+  "map_object_list": "Danh sách đối tượng"
 }
