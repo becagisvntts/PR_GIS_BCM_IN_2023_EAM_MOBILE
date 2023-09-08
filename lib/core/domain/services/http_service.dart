@@ -20,15 +20,12 @@ class HttpService {
       {required String endpoint,
       Map<String, dynamic>? body,
       String? sessionId}) async {
-    bool isOnline = await checkConnection();
-    if (isOnline) {
-      var response = await http.post(Uri.parse(endpoint),
-          headers: getHeaders(sessionId), body: jsonEncode(body));
+    await checkConnection();
+    var response = await http.post(Uri.parse(endpoint),
+        headers: getHeaders(sessionId), body: jsonEncode(body));
 
-      checkAuthorizationResponseAndRedirect(response);
-      return response;
-    }
-    throw Exception(["No internet"]);
+    checkAuthorizationResponseAndRedirect(response);
+    return response;
   }
 
   static Future<http.Response> postWithAuth(
@@ -39,14 +36,11 @@ class HttpService {
 
   static Future<http.Response> get(
       {required String endpoint, String? sessionId}) async {
-    bool isOnline = await checkConnection();
-    if (isOnline) {
-      var response =
-          await http.get(Uri.parse(endpoint), headers: getHeaders(sessionId));
-      checkAuthorizationResponseAndRedirect(response);
-      return response;
-    }
-    throw Exception();
+    await checkConnection();
+    var response =
+        await http.get(Uri.parse(endpoint), headers: getHeaders(sessionId));
+    checkAuthorizationResponseAndRedirect(response);
+    return response;
   }
 
   static Future<http.Response> getWithAuth({required String endpoint}) async {
@@ -58,18 +52,14 @@ class HttpService {
       {required String endpoint,
       Map<String, dynamic>? body,
       String? sessionId}) async {
-    bool isOnline = await checkConnection();
-    if (isOnline) {
-      var response = await http.put(
-        Uri.parse(endpoint),
-        headers: getHeaders(sessionId),
-        body: jsonEncode(body),
-      );
-      checkAuthorizationResponseAndRedirect(response);
-      return response;
-    }
-
-    throw Exception();
+    await checkConnection();
+    var response = await http.put(
+      Uri.parse(endpoint),
+      headers: getHeaders(sessionId),
+      body: jsonEncode(body),
+    );
+    checkAuthorizationResponseAndRedirect(response);
+    return response;
   }
 
   static Future<http.Response> putWithAuth(
@@ -82,18 +72,14 @@ class HttpService {
       {required String endpoint,
       Map<String, dynamic>? body,
       String? sessionId}) async {
-    bool isOnline = await checkConnection();
-    if (isOnline) {
-      var response = await http.delete(
-        Uri.parse(endpoint),
-        headers: getHeaders(sessionId),
-        body: jsonEncode(body),
-      );
-      checkAuthorizationResponseAndRedirect(response);
-      return response;
-    }
-
-    throw Exception();
+    await checkConnection();
+    var response = await http.delete(
+      Uri.parse(endpoint),
+      headers: getHeaders(sessionId),
+      body: jsonEncode(body),
+    );
+    checkAuthorizationResponseAndRedirect(response);
+    return response;
   }
 
   static Future<http.Response> deleteWithAuth(
@@ -106,16 +92,12 @@ class HttpService {
       {required String endpoint,
       required String filePath,
       String? sessionId}) async {
-    bool isOnline = await checkConnection();
-    if (isOnline) {
-      var request = http.MultipartRequest('POST', Uri.parse(endpoint));
-      request.files.add(await http.MultipartFile.fromPath('file', filePath));
-      request.headers.addAll({'Cmdbuild-authorization': sessionId ?? ""});
-      var response = await request.send();
-      return response;
-    }
-
-    throw Exception();
+    await checkConnection();
+    var request = http.MultipartRequest('POST', Uri.parse(endpoint));
+    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    request.headers.addAll({'Cmdbuild-authorization': sessionId ?? ""});
+    var response = await request.send();
+    return response;
   }
 
   static Future<http.StreamedResponse> uploadFileWithAuth(
@@ -142,7 +124,7 @@ class HttpService {
     if (!isOnline) {
       NotifyService.showErrorMessage(
           LocalizationService.translate.msg_no_internet);
-      return false;
+      throw Exception(LocalizationService.translate.msg_no_internet);
     }
     return true;
   }

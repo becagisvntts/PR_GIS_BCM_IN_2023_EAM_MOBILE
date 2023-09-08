@@ -23,23 +23,20 @@ class NotifyService {
 
     _fToast!.showToast(
         child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: color,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(iconData, color: Colors.white),
-          const SizedBox(
-            width: 12.0,
-          ),
-          Expanded(
-              child:
-                  Text(message, style: const TextStyle(color: Colors.white))),
-        ],
-      ),
-    ));
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: color,
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(iconData, color: Colors.white),
+              const SizedBox(
+                width: 12.0,
+              ),
+              Expanded(
+                  child: Text(message,
+                      style: const TextStyle(color: Colors.white))),
+            ])));
   }
 }

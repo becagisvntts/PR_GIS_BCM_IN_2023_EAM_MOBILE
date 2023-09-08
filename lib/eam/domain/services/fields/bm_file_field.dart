@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/file_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/localization_service.dart';
@@ -48,24 +47,21 @@ class BMFileFieldState extends State<BMFileField> {
   }
 
   void pickFile() async {
-    PermissionStatus permissionStatus = await Permission.storage.request();
-    if (permissionStatus == PermissionStatus.granted) {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: widget.dmsCategory == "Photo" ? FileType.media : FileType.any);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: widget.dmsCategory == "Photo" ? FileType.media : FileType.any);
 
-      if (result != null) {
-        setState(() {
-          _uploadingFile = true;
-        });
-        if (result.files.single.path != null) {
-          handleUploadFile(result.files.single.path!, result.files.single.name);
-        } else {
-          NotifyService.showErrorMessage("Không thể đọc file");
-        }
-        setState(() {
-          _uploadingFile = false;
-        });
+    if (result != null) {
+      setState(() {
+        _uploadingFile = true;
+      });
+      if (result.files.single.path != null) {
+        handleUploadFile(result.files.single.path!, result.files.single.name);
+      } else {
+        NotifyService.showErrorMessage("Không thể đọc file");
       }
+      setState(() {
+        _uploadingFile = false;
+      });
     }
   }
 

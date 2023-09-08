@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/config/theme_config.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/date_time_helper.dart';
 import 'package:pr_gis_bcm_in_2023_eam_mobile/core/domain/services/file_helper.dart';
@@ -72,55 +71,51 @@ class BMFileViewerState extends State<BMFileViewer> {
   }
 
   void downloadFile(Map<String, String> requestHeaders) async {
-    PermissionStatus permissionStatus = await Permission.storage.request();
-    if (permissionStatus == PermissionStatus.granted) {
-      var encodeFileName = Uri.encodeComponent(widget.fileName);
-      String fileUrl =
-          "${HttpService.apiUrl}classes/${widget.classType}/cards/${widget.cardId}/attachments/${widget.value}/$encodeFileName";
+    var encodeFileName = Uri.encodeComponent(widget.fileName);
+    String fileUrl =
+        "${HttpService.apiUrl}classes/${widget.classType}/cards/${widget.cardId}/attachments/${widget.value}/$encodeFileName";
 
-      bool? savingStatus;
-      String folderPath = await FileHelper.getApplicationPath();
-      String filePath =
-          "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-$encodeFileName";
+    bool? savingStatus;
+    String folderPath = await FileHelper.getApplicationPath();
+    String filePath =
+        "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-$encodeFileName";
 
-      try {
-        HttpService.disabledInteractionOnRequesting();
+    try {
+      HttpService.disabledInteractionOnRequesting();
 
-        var response = await Dio().download(fileUrl, filePath,
-            options: Options(headers: requestHeaders));
-        Share.shareXFiles([XFile(filePath)]);
-        savingStatus = response.statusCode == 200;
-      } catch (e) {
-        print(e);
-        savingStatus = false;
-      }
-
-      HttpService.closeOverlayLayerBlocking();
-      // if (widget.dmsCategory == "Photo") {
-      //   savingStatus =
-      //       await GallerySaver.saveImage(fileUrl, headers: requestHeaders);
-      // } else {
-      //   String folderPath = await FileHelper.getDownloadedFolderPath();
-      //   try {
-      //     var response = await Dio().download(fileUrl,
-      //         "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-${widget.fileName}",
-      //         options: Options(headers: requestHeaders));
-      //     savingStatus = response.statusCode == 200;
-      //   } catch (e) {
-      //     savingStatus = false;
-      //   }
-      // }
-
-      if (!savingStatus) {
-        NotifyService.showErrorMessage(LocalizationService.translate
-            .msg_action_fail(LocalizationService.translate.cm_download_file));
-      }
-      // else {
-      //   NotifyService.showSuccessMessage(LocalizationService.translate
-      //       .msg_action_success(
-      //       LocalizationService.translate.cm_download_file));
-      // }
+      var response = await Dio().download(fileUrl, filePath,
+          options: Options(headers: requestHeaders));
+      Share.shareXFiles([XFile(filePath)]);
+      savingStatus = response.statusCode == 200;
+    } catch (e) {
+      savingStatus = false;
     }
+
+    HttpService.closeOverlayLayerBlocking();
+    // if (widget.dmsCategory == "Photo") {
+    //   savingStatus =
+    //       await GallerySaver.saveImage(fileUrl, headers: requestHeaders);
+    // } else {
+    //   String folderPath = await FileHelper.getDownloadedFolderPath();
+    //   try {
+    //     var response = await Dio().download(fileUrl,
+    //         "$folderPath/${DateTimeHelper.getCurrentMillisecondTime()}-${widget.fileName}",
+    //         options: Options(headers: requestHeaders));
+    //     savingStatus = response.statusCode == 200;
+    //   } catch (e) {
+    //     savingStatus = false;
+    //   }
+    // }
+
+    if (!savingStatus) {
+      NotifyService.showErrorMessage(LocalizationService.translate
+          .msg_action_fail(LocalizationService.translate.cm_download_file));
+    }
+    // else {
+    //   NotifyService.showSuccessMessage(LocalizationService.translate
+    //       .msg_action_success(
+    //       LocalizationService.translate.cm_download_file));
+    // }
   }
 
   void showPreviewAttachment() async {
